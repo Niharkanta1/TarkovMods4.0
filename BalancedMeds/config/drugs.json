@@ -1,0 +1,184 @@
+{
+	"590c695186f7741e566b64a2": {
+		"name": "Augmentin_antibiotic_pills",
+		"medUseTime": 5,
+		"MaxHpResource": 10,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Energy": {
+				"value": 5
+			},
+			"Hydration": {
+				"value": -5
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 300,
+				"fadeOut": 5
+			},
+			"Intoxication": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0
+			}
+		},
+		"effects_buffs": [
+			{
+				"BuffType": "SkillRate",
+				"Chance": 1,
+				"Delay": 1,
+				"Duration": 300,
+				"Value": 1,
+				"AbsoluteValue": true,
+				"SkillName": "Immunity"
+			}
+		]
+	},
+	"5751a89d24597722aa0e8db0": {
+		"name": "Golden_Star_Balm",
+		"medUseTime": 7,
+		"MaxHpResource": 10,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Energy": {
+				"value": -2
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 400,
+				"fadeOut": 20
+			},
+			"Contusion": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0
+			},
+			"RadExposure": {
+				"delay": 0,
+				"duration": 400,
+				"fadeOut": 20
+			}
+		},
+		"effects_buffs": [
+			{
+				"BuffType": "EnergyRate",
+				"Chance": 1,
+				"Delay": 1,
+				"Duration": 5,
+				"Value": 1,
+				"AbsoluteValue": true,
+				"SkillName": ""
+			},
+			{
+				"BuffType": "HydrationRate",
+				"Chance": 1,
+				"Delay": 1,
+				"Duration": 5,
+				"Value": 1,
+				"AbsoluteValue": true,
+				"SkillName": ""
+			},
+			{
+				"BuffType": "Contusion",
+				"Chance": 1,
+				"Delay": 1,
+				"Duration": 5,
+				"Value": 1,
+				"AbsoluteValue": false,
+				"SkillName": ""
+			}
+		]
+	},
+	"5af0548586f7743a532b7e99": {
+		"name": "Ibuprofen_painkillers",
+		"medUseTime": 5,
+		"MaxHpResource": 15,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Hydration": {
+				"value": -5
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 480,
+				"fadeOut": 10
+			},
+			"Contusion": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0
+			}
+		}
+	},
+	"544fb3f34bdc2d03748b456a": {
+		"name": "Morphine_injector",
+		"medUseTime": 2,
+		"MaxHpResource": 3,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Energy": {
+				"value": -2
+			},
+			"Hydration": {
+				"value": -3
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 600,
+				"fadeOut": 5
+			},
+			"Contusion": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0
+			}
+		}
+	},
+	"544fb37f4bdc2dee738b4567": {
+		"name": "Analgin_painkillers",
+		"medUseTime": 3,
+		"MaxHpResource": 10,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Hydration": {
+				"value": -2
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 300,
+				"fadeOut": 15
+			}
+		}
+	},
+	"5755383e24597772cb798966": {
+		"name": "Vaseline",
+		"medUseTime": 6,
+		"MaxHpResource": 10,
+		"hpResourceRate": 0,
+		"effects_health": {
+			"Energy": {
+				"value": 0
+			},
+			"Hydration": {
+				"value": 0
+			}
+		},
+		"effects_damage": {
+			"Pain": {
+				"delay": 0,
+				"duration": 300,
+				"fadeOut": 50
+			}
+		}
+	}
+}

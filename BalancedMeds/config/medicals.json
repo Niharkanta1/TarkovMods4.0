@@ -1,0 +1,155 @@
+{
+    "544fb25a4bdc2dfb738b4567": {
+        "medUseTime": 2,
+        "MaxHpResource": 2,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "LightBleeding": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "Aseptic_bandage"
+    },
+    "5751a25924597722c463c472": {
+        "medUseTime": 2,
+        "MaxHpResource": 4,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "LightBleeding": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "Army_bandage"
+    },
+    "5d02778e86f774203e7dedbe": {
+        "medUseTime": 15,
+        "MaxHpResource": 10,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "DestroyedPart": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0,
+                "healthPenaltyMin": 50,
+                "healthPenaltyMax": 65
+            }
+        },
+        "name": "CMS_kit"
+    },
+    "5af0454c86f7746bf20992e8": {
+        "medUseTime": 3,
+        "MaxHpResource": 5,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "Fracture": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "Immobilizing_splint_(alu)"
+    },
+    "60098af40accd37ef2175f27": {
+        "medUseTime": 3,
+        "MaxHpResource": 2,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "HeavyBleeding": {
+                "delay": 0,
+                "duration": 60,
+                "fadeOut": 0
+            }
+        },
+        "name": "Hemostatic_tourniquet_CAT"
+    },
+    "5e831507ea0a7c419c2f9bd9": {
+        "medUseTime": 5,
+        "MaxHpResource": 2,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "HeavyBleeding": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "Esmarch_tourniquet"
+    },
+    "5e8488fa988a8701445df1e4": {
+        "medUseTime": 3,
+        "MaxHpResource": 5,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "HeavyBleeding": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "CALOK-B_Hemostatic"
+    },
+    "5e99735686f7744bfc4af32c": {
+        "medUseTime": 16,
+        "MaxHpResource": 4500,
+        "hpResourceRate": 1,
+        "effects_health": [],
+        "effects_damage": {
+            "DestroyedPart": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0,
+                "healthPenaltyMin": 100,
+                "healthPenaltyMax": 100
+            }
+        },
+        "name": "sanitar_medical_surgical_kit"
+    },
+    "544fb3364bdc2d34748b456a": {
+        "medUseTime": 5,
+        "MaxHpResource": 2,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "Fracture": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0
+            }
+        },
+        "name": "Immobilizing_splint"
+    },
+    "5d02797c86f774203f38e30a": {
+        "medUseTime": 18,
+        "MaxHpResource": 20,
+        "hpResourceRate": 0,
+        "effects_health": [],
+        "effects_damage": {
+            "Fracture": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0,
+                "healthPenaltyMin": 0,
+                "healthPenaltyMax": 0
+            },
+            "DestroyedPart": {
+                "delay": 0,
+                "duration": 0,
+                "fadeOut": 0,
+                "healthPenaltyMin": 70,
+                "healthPenaltyMax": 85
+            }
+        },
+        "name": "Surv12_field_surgical_kit"
+    }
+}

@@ -1,0 +1,94 @@
+## Ignore user-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Ignore build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+out/
+artifacts/
+
+## Ignore dotnet runtime generated files
+*.dll
+*.exe
+*.app
+*.pdb
+*.mdb
+*.cache
+*.log
+*.nupkg
+*.snupkg
+
+## Ignore Visual Studio generated files
+.vs/
+
+## Ignore Rider / JetBrains project folders
+.idea/
+*.sln.iml
+
+## Ignore NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+## Ignore dotnet tools manifest
+dotnet-tools.json
+
+## Ignore publish output
+publish/
+*.PublishSettings
+*.pubxml
+*.pubxml.user
+
+## Ignore test results
+TestResult*/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+## Ignore temp, backup, cache
+*.tmp
+*.bak
+*.swp
+[Tt]emp/
+[Tt]emporary/
+.cache/
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+## Ignore generated JSON configs (optional)
+# Remove this if you want to commit your configs
+user/mods/*/config/*.json
+
+## Ignore environment files
+*.env
+*.env.*
+
+## Ignore your secret config files (optional)
+secrets.json
+
+## Ignore lock files (optional)
+project.lock.json
+
+## Ignore ReSharper files
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+## Ignore dotCover files
+*.dotCover

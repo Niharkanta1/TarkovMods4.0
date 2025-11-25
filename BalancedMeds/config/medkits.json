@@ -1,0 +1,175 @@
+{
+	"590c657e86f77412b013051d": {
+		"name": "Grizzly_First_Aid_Kit",
+		"medUseTime": 5,
+		"MaxHpResource": 2500,
+		"hpResourceRate": 250,
+		"effects_health": [],
+		"effects_damage": {
+			"LightBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 30
+			},
+			"HeavyBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 60
+			},
+			"Fracture": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 40
+			},
+			"Contusion": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0
+			},
+			"RadExposure": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0
+			}
+		}
+	},
+	"60098ad7c2240c0fe85c570a": {
+		"name": "AFAK_personal_tactical_first_aid_kit",
+		"medUseTime": 3,
+		"MaxHpResource": 750,
+		"hpResourceRate": 85,
+		"effects_health": [],
+		"effects_damage": {
+			"LightBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 25,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			},
+			"RadExposure": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			},
+			"HeavyBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 50,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			}
+		}
+	},
+	"590c661e86f7741e566b646a": {
+		"name": "Car_first_aid_kit",
+		"medUseTime": 3,
+		"MaxHpResource": 450,
+		"hpResourceRate": 90,
+		"effects_health": [],
+		"effects_damage": {
+			"LightBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 40
+			}
+		}
+	},
+	"590c678286f77426c9660122": {
+		"name": "IFAK_personal_tactical_first_aid_kit",
+		"medUseTime": 3,
+		"MaxHpResource": 600,
+		"hpResourceRate": 100,
+		"effects_health": [],
+		"effects_damage": {
+			"LightBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 25,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			},
+			"RadExposure": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			},
+			"HeavyBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 50,
+				"healthPenaltyMin": 0,
+				"healthPenaltyMax": 0
+			}
+		}
+	},
+	"5755356824597772cb798962": {
+		"name": "AI-2_medikit",
+		"medUseTime": 1.5,
+		"MaxHpResource": 300,
+		"hpResourceRate": 75,
+		"effects_health": [],
+		"effects_damage": {
+			"RadExposure": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0
+			}
+		}
+	},
+	"544fb45d4bdc2dee738b4568": {
+		"name": "Salewa_FIRST_AID_KIT",
+		"medUseTime": 3,
+		"MaxHpResource": 600,
+		"hpResourceRate": 100,
+		"effects_health": [],
+		"effects_damage": {
+			"LightBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 35
+			},
+			"HeavyBleeding": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 50
+			}
+		}
+	},
+	"5e99711486f7744bfc4af328": {
+		"name": "sanitar_meds_medkit_ifak",
+		"medUseTime": 2,
+		"MaxHpResource": 4500,
+		"hpResourceRate": 1,
+		"effects_health": [],
+		"effects_damage": {
+			"DestroyedPart": {
+				"delay": 0,
+				"duration": 0,
+				"fadeOut": 0,
+				"cost": 0,
+				"healthPenaltyMin": 100,
+				"healthPenaltyMax": 100
+			}
+		}
+	}
+}
