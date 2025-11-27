@@ -2,21 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>BalancedMeds</RootNamespace>
+    <RootNamespace>BetterAttachments</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
-    <Version>0.0.1</Version>
+    <Version>1.0.0</Version>
     <!-- The two lines below will set the output path for the binaries -->
     <OutputPath>bin\$(Configuration)\$(ProjectName)\$(AssemblyName)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="config\**\*" CopyToOutputDirectory="Always"/>
     <PackageReference Include="SPTarkov.Common" Version="4.0.6" />
     <PackageReference Include="SPTarkov.DI" Version="4.0.6" />
     <PackageReference Include="SPTarkov.Server.Core" Version="4.0.6" />
-	<None Include="config\**\*" CopyToOutputDirectory="Always"/>
   </ItemGroup>
 
 </Project>

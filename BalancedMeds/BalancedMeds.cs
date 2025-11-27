@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using System.Text.Json.Nodes;
 using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Logging;
 
 namespace BalancedMeds;
 
@@ -30,11 +31,11 @@ public record ModMetadata : AbstractModMetadata
 public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databaseServcer) : IOnLoad
 {
     Dictionary<MongoId, TemplateItem> itemsDb = null!;
-    Dictionary<string, IEnumerable<SPTarkov.Server.Core.Models.Eft.Common.Buff>> globalBuffs = null!;
+    Dictionary<string, IEnumerable<Buff>> globalBuffs = null!;
 
     public Task OnLoad()
     {
-        logger.Info("[BalancedMeds] Loading BalancedMeds Mod...");
+        logger.LogWithColor("[BalancedMeds] Loading BalancedMeds Mod...", LogTextColor.Green);
         itemsDb = databaseServcer.GetTables().Templates.Items;
         //logger.Info("[BalancedMeds] Items DB " + itemsDb.Count);
 
@@ -50,7 +51,7 @@ public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databa
 
         globalBuffs = databaseServcer.GetTables().Globals.Configuration.Health.Effects.Stimulator.Buffs;
         UpdateStimulatorConfigData(stimulatorConfig, globalBuffs, itemsDb);
-        logger.Info("[BalancedMeds] Loading BalancedMeds Mod Completed.");
+        logger.LogWithColor("[BalancedMeds] Loading BalancedMeds Mod Completed.", LogTextColor.Green);
         return Task.CompletedTask;
     }
 

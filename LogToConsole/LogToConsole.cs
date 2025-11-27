@@ -1,8 +1,11 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
 
 namespace LogToConsole;
 
@@ -21,23 +24,39 @@ public record ModMetadata : AbstractModMetadata
     public override string? License { get; init; } = "MIT";
 }
 
-[Injectable(TypePriority = OnLoadOrder.PreSptModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class Logging(
-    ISptLogger<Logging> logger) // We inject a logger for use inside our class, it must have the class inside the diamond <> brackets
+    ISptLogger<Logging> logger, DatabaseServer databaseServcer) // We inject a logger for use inside our class, it must have the class inside the diamond <> brackets
     : IOnLoad // Implement the IOnLoad interface so that this mod can do something on server load
 {
+    Dictionary<MongoId, TemplateItem> itemsDb = null!;
     public Task OnLoad()
     {
         // We can access the logger and call its methods to log to the server window and the server log file
         logger.Success("[LogToConsole] This is a success message");
-        logger.Warning("[LogToConsole] This is a warning message");
-        logger.Error("[LogToConsole] This is an error message");
-        logger.Info("[LogToConsole] This is an info message");
-        logger.Critical("[LogToConsole] This is a critical message");
 
-        // Logging with colors requires you to 'pass' the text color and background color
-        logger.LogWithColor("[LogToConsole] This is a message with custom colors", LogTextColor.Red, LogBackgroundColor.Black);
-        logger.Debug("[LogToConsole] This is a debug message that gets written to the log file, not the console");
+        itemsDb = databaseServcer.GetTables().Templates.Items;
+
+        foreach (TemplateItem item in itemsDb.Values)
+        {
+            MongoId parentId = item.Parent;
+            if (parentId.Equals(BaseClasses.STIMULATOR))
+            {
+                TemplateItemProperties props = item.Properties;
+                var buff = (props != null) ? props.StimulatorBuffs : "";
+                logger.Info($"{item.Id} - {item.Name} - {buff}");
+            }
+
+        }
+
+        // logger.Warning("[LogToConsole] This is a warning message");
+        // logger.Error("[LogToConsole] This is an error message");
+        // logger.Info("[LogToConsole] This is an info message");
+        // logger.Critical("[LogToConsole] This is a critical message");
+
+        // // Logging with colors requires you to 'pass' the text color and background color
+        // logger.LogWithColor("[LogToConsole] This is a message with custom colors", LogTextColor.Red, LogBackgroundColor.Black);
+        // logger.Debug("[LogToConsole] This is a debug message that gets written to the log file, not the console");
 
         // Inform the server our mod has finished doing work
         return Task.CompletedTask;
