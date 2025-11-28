@@ -1,0 +1,568 @@
+{
+  "5751435d24597720a27126d1": {
+    "name": "Max_energy",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 80
+      },
+      "Hydration": {
+        "value": 60
+      }
+    },
+    "effects_damage": {}
+  },
+  "614451b71e5874611e2c7ae5": {
+    "name": "item_food_vodka_BAD",
+    "MaxResource": 3,
+    "effects_health": {
+      "Hydration": {
+        "value": -25
+      }
+    },
+    "effects_damage": {
+      "Pain": {
+        "delay": 0,
+        "duration": 480
+      },
+      "RadExposure": {
+        "delay": 0,
+        "duration": 0
+      }
+    }
+  },
+  "57513f07245977207e26a311": {
+    "name": "Apple_juice",
+    "MaxResource": 80,
+    "effects_health": {
+      "Energy": {
+        "value": 40
+      },
+      "Hydration": {
+        "value": 80
+      }
+    },
+    "effects_damage": {}
+  },
+  "5d1b33a686f7742523398398": {
+    "name": "Purified_water",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": 210
+      }
+    },
+    "effects_damage": {
+      "RadExposure": {
+        "delay": 0,
+        "duration": 0
+      }
+    }
+  },
+  "57513fcc24597720a31c09a6": {
+    "name": "Vita_juice",
+    "MaxResource": 120,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": 90
+      }
+    },
+    "effects_damage": {}
+  },
+  "57513f9324597720a7128161": {
+    "name": "Grand_juice",
+    "MaxResource": 120,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": 80
+      }
+    },
+    "effects_damage": {}
+  },
+  "5d40407c86f774318526545a": {
+    "name": "Bottle_of_vodka_Tarkovskaya",
+    "MaxResource": 3,
+    "effects_health": {
+      "Hydration": {
+        "value": -25
+      }
+    },
+    "effects_damage": {
+      "Pain": {
+        "delay": 0,
+        "duration": 480
+      },
+      "RadExposure": {
+        "delay": 0,
+        "duration": 0
+      }
+    }
+  },
+  "544fb62a4bdc2dfb738b4568": {
+    "name": "Russian_Army_pineapple_juice",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 45
+      },
+      "Hydration": {
+        "value": 90
+      }
+    },
+    "effects_damage": {}
+  },
+  "5d1b376e86f774252519444e": {
+    "name": "moonshine",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": -6
+      }
+    },
+    "effects_damage": {
+      "Pain": {
+        "delay": 0,
+        "duration": 600
+      },
+      "RadExposure": {
+        "delay": 0,
+        "duration": 0
+      }
+    }
+  },
+  "5c0fa877d174af02a012e1cf": {
+    "name": "Water_bottle_with_a_filter_Aquamari",
+    "MaxResource": 150,
+    "effects_health": {
+      "Energy": {
+        "value": 20
+      },
+      "Hydration": {
+        "value": 350
+      }
+    },
+    "effects_damage": {}
+  },
+  "60b0f93284c20f0feb453da7": {
+    "name": "Can_of_RatCola_soda",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 20
+      },
+      "Hydration": {
+        "value": 40
+      }
+    },
+    "effects_damage": {}
+  },
+  "5751496424597720a27126da": {
+    "name": "Hot_Rod",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 20
+      },
+      "Hydration": {
+        "value": 45
+      }
+    },
+    "effects_damage": {}
+  },
+  "5e8f3423fd7471236e6e3b64": {
+    "name": "Premium_Kvass",
+    "MaxResource": 120,
+    "effects_health": {
+      "Energy": {
+        "value": 25
+      },
+      "Hydration": {
+        "value": 65
+      }
+    },
+    "effects_damage": {}
+  },
+  "575146b724597720a27126d5": {
+    "name": "Pack_of_milk",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": 60
+      }
+    },
+    "effects_damage": {}
+  },
+  "5d403f9186f7743cac3f229b": {
+    "name": "Bottle_of_Dan_Jackiel_Whiskey",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": -10
+      }
+    },
+    "effects_damage": {
+      "Pain": {
+        "delay": 0,
+        "duration": 300
+      },
+      "RadExposure": {
+        "delay": 0,
+        "duration": 0
+      }
+    }
+  },
+  "60098b1705871270cd5352a1": {
+    "name": "Emergency_water_ration",
+    "MaxResource": 4,
+    "effects_health": {
+      "Energy": {
+        "value": 40
+      },
+      "Hydration": {
+        "value": 80
+      }
+    },
+    "effects_damage": {}
+  },
+  "575062b524597720a31c09a1": {
+    "name": "Green_Ice",
+    "MaxResource": 2,
+    "effects_health": {
+      "Hydration": {
+        "value": 30
+      }
+    },
+    "effects_damage": {}
+  },
+  "5448fee04bdc2dbc018b4567": {
+    "name": "0.6L_water_bottle",
+    "MaxResource": 120,
+    "effects_health": {
+      "Hydration": {
+        "value": 120
+      }
+    },
+    "effects_damage": {}
+  },
+  "57514643245977207f2c2d09": {
+    "name": "TarCola",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 20
+      },
+      "Hydration": {
+        "value": 60
+      }
+    },
+    "effects_damage": {}
+  },
+  "544fb6cc4bdc2d34748b456e": {
+    "name": "Slickers_bar",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 50
+      },
+      "Hydration": {
+        "value": -5
+      }
+    },
+    "effects_damage": {}
+  },
+  "5734773724597737fd047c14": {
+    "name": "Condensed_milk",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 100
+      },
+      "Hydration": {
+        "value": -80
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d9c245977448b40fa85": {
+    "name": "Can_of_herring",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 75
+      },
+      "Hydration": {
+        "value": -3
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d7224597744596b4e72": {
+    "name": "Can_of_beef_stew",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": -2
+      }
+    },
+    "effects_damage": {}
+  },
+  "59e3577886f774176a362503": {
+    "name": "Pack_of_sugar",
+    "MaxResource": 80,
+    "effects_health": {
+      "Energy": {
+        "value": 80
+      },
+      "Hydration": {
+        "value": -45
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d3d245977448f7b7f61": {
+    "name": "Rye_croutons",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 45
+      },
+      "Hydration": {
+        "value": -6
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d5f245977448b40fa81": {
+    "name": "Humpback_salmon",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 80
+      },
+      "Hydration": {
+        "value": -2
+      }
+    },
+    "effects_damage": {}
+  },
+  "5673de654bdc2d180f8b456d": {
+    "name": "Can_of_pacific_saury",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 70
+      },
+      "Hydration": {
+        "value": -2
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d8724597744596b4e76": {
+    "name": "Squash_spread",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 50
+      }
+    },
+    "effects_damage": {}
+  },
+  "590c5d4b86f774784e1b9c45": {
+    "name": "Iskra_lunch_box",
+    "MaxResource": 4,
+    "effects_health": {
+      "Energy": {
+        "value": 200
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d90245977448f7b7f65": {
+    "name": "Pack_of_oat_flakes",
+    "MaxResource": 80,
+    "effects_health": {
+      "Energy": {
+        "value": 80
+      },
+      "Hydration": {
+        "value": -8
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347da92459774491567cf5": {
+    "name": "Can_of_delicious_beef_stew",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 75
+      },
+      "Hydration": {
+        "value": -1
+      }
+    },
+    "effects_damage": {}
+  },
+  "5448ff904bdc2d6f028b456e": {
+    "name": "Army_Crackers",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 30
+      },
+      "Hydration": {
+        "value": -5
+      }
+    },
+    "effects_damage": {}
+  },
+  "5bc9c29cd4351e003562b8a3": {
+    "name": "Can_of_sprats",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": -2
+      }
+    },
+    "effects_damage": {}
+  },
+  "5bc9b156d4351e00367fbce9": {
+    "name": "Jar_of_DevilDog_mayo",
+    "MaxResource": 150,
+    "effects_health": {
+      "Energy": {
+        "value": 150
+      },
+      "Hydration": {
+        "value": -99
+      }
+    },
+    "effects_damage": {}
+  },
+  "590c5f0d86f77413997acfab": {
+    "name": "MRE_lunch_box",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 90
+      }
+    },
+    "effects_damage": {}
+  },
+  "57347d692459774491567cf1": {
+    "name": "Can_of_green_peas",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": 20
+      }
+    },
+    "effects_damage": {}
+  },
+  "57505f6224597709a92585a9": {
+    "name": "Alyonka_chocolate_bar",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 50
+      },
+      "Hydration": {
+        "value": -5
+      }
+    },
+    "effects_damage": {}
+  },
+  "5751487e245977207e26a315": {
+    "name": "Emelya_rye_croutons",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 50
+      },
+      "Hydration": {
+        "value": -10
+      }
+    },
+    "effects_damage": {}
+  },
+  "62a09f32621468534a797acb": {
+    "name": "Bottle_of_beer",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": 30
+      }
+    },
+    "effects_damage": {}
+  },
+  "656df4fec921ad01000481a2": {
+    "name": "Pack_of_instant_noodles",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 70
+      },
+      "Hydration": {
+        "value": -10
+      }
+    },
+    "effect_damage": {}
+  },
+  "65815f0e647e3d7246384e14": {
+    "name": "Pack_of_Tarker_dried_meat",
+    "MaxResource": 2,
+    "effects_health": {
+      "Energy": {
+        "value": 60
+      },
+      "Hydration": {
+        "value": -10
+      }
+    },
+    "effect_damage": {}
+  },
+  "635a758bfefc88a93f021b8a": {
+    "name": "Salty_Dog_beef_sausage",
+    "MaxResource": 3,
+    "effects_health": {
+      "Energy": {
+        "value": 90
+      },
+      "Hydration": {
+        "value": -10
+      }
+    },
+    "effect_damage": {}
+  }
+}
