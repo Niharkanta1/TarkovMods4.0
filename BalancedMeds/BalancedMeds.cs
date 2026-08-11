@@ -1,42 +1,41 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using System.Text.Json.Nodes;
-using SPTarkov.Server.Core.Models.Eft.Common;
-using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace BalancedMeds;
 
-public record ModMetadata : AbstractModMetadata
+public record ModMetadata : IModMetadata
 {
-    public override string ModGuid { get; init; } = "com.deadwolf.spt.balancedmeds";
-    public override string Name { get; init; } = "BalancedMeds";
-    public override string Author { get; init; } = "DeadW0Lf";
-    public override List<string>? Contributors { get; init; }
-    public override SemanticVersioning.Version Version { get; init; } = new("1.0.1");
-    public override SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
-    public override List<string>? Incompatibilities { get; init; }
-    public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
-    public override string? Url { get; init; } = "https://github.com/sp-tarkov/server-mod-examples";
-    public override bool? IsBundleMod { get; init; } = false;
-    public override string? License { get; init; } = "MIT";
+    public string ModGuid { get; init; } = "com.deadwolf.spt.balancedmeds";
+    public string Name { get; init; } = "BalancedMeds";
+    public string Author { get; init; } = "DeadW0Lf";
+    public List<string>? Contributors { get; init; }
+    public SemanticVersioning.Version Version { get; init; } = new("2.0.0");
+    public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
+    public List<string>? Incompatibilities { get; init; }
+    public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
+    public string? Url { get; init; } = "https://github.com/Niharkanta1/TarkovMods4.0";
+    public bool? IsBundleMod { get; init; } = false;
+    public string? License { get; init; } = "MIT";
+    public bool HasPrepatcher { get; init; } = false;
 }
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databaseServcer) : IOnLoad
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
+public class BalancedMeds(ISptLogger<BalancedMeds> logger, TemplateTable templateTable, GlobalTable globalTable) : IOnLoad
 {
     Dictionary<MongoId, TemplateItem> itemsDb = null!;
     Dictionary<string, IEnumerable<Buff>> globalBuffs = null!;
 
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
-        logger.LogWithColor("[BalancedMeds] Loading BalancedMeds Mod...", LogTextColor.Green);
-        itemsDb = databaseServcer.GetTables().Templates.Items;
+        //logger.LogWithColor("[BalancedMeds] Loading BalancedMeds Mod...", Spectre.Console.Color.Green);
+        itemsDb = templateTable.Items;
         //logger.Info("[BalancedMeds] Items DB " + itemsDb.Count);
 
         // Load all configs
@@ -45,18 +44,19 @@ public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databa
         var medkitConfig = LoadJson("user/mods/BalancedMeds/config/medkits.json");
         var stimulatorConfig = LoadJson("user/mods/BalancedMeds/config/stimulators.json");
 
-        UpdateDrugConfigData(drugConfig, itemsDb);
-        UpdateMedicalConfigData(medicalConfig, itemsDb);
-        UpdateMedkitConfigData(medkitConfig, itemsDb);
+        int count = UpdateDrugConfigData(drugConfig, itemsDb);
+        count += UpdateMedicalConfigData(medicalConfig, itemsDb);
+        count += UpdateMedkitConfigData(medkitConfig, itemsDb);
 
-        globalBuffs = databaseServcer.GetTables().Globals.Configuration.Health.Effects.Stimulator.Buffs;
+        globalBuffs = globalTable.Configuration.Health.Effects.Stimulator.Buffs;
         UpdateStimulatorConfigData(stimulatorConfig, globalBuffs, itemsDb);
-        logger.LogWithColor("[BalancedMeds] Loading BalancedMeds Mod Completed.", LogTextColor.Green);
+        logger.LogWithColor($"[BalancedMeds] Loading BalancedMeds Mod Completed. with {count} updates", Spectre.Console.Color.Green);
         return Task.CompletedTask;
     }
 
-    private void UpdateDrugConfigData(JsonObject drugConfig, Dictionary<MongoId, TemplateItem> itemsDb)
+    private int UpdateDrugConfigData(JsonObject drugConfig, Dictionary<MongoId, TemplateItem> itemsDb)
     {
+        int count = 0;
         foreach (var entry in drugConfig)
         {
             string medicationId = entry.Key;
@@ -79,12 +79,15 @@ public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databa
                 JsonObject healthEffectData = drugData["effects_health"]!.AsObject();
                 ApplyHealthEffects(healthEffectData, "Energy", HealthFactor.Energy, itemProps.EffectsHealth);
                 ApplyHealthEffects(healthEffectData, "Hydration", HealthFactor.Hydration, itemProps.EffectsHealth);
+                count++;
             }
         }
+        return count;
     }
 
-    private void UpdateMedicalConfigData(JsonObject medicalConfig, Dictionary<MongoId, TemplateItem> itemsDb)
+    private int UpdateMedicalConfigData(JsonObject medicalConfig, Dictionary<MongoId, TemplateItem> itemsDb)
     {
+        int count = 0;
         foreach (var entry in medicalConfig)
         {
             string medicationId = entry.Key;
@@ -103,12 +106,15 @@ public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databa
                 ApplyDamageEffects(damageEffectData, "DestroyedPart", DamageEffectType.DestroyedPart, itemProps.EffectsDamage);
                 ApplyDamageEffects(damageEffectData, "Fracture", DamageEffectType.Fracture, itemProps.EffectsDamage);
                 ApplyDamageEffects(damageEffectData, "HeavyBleeding", DamageEffectType.HeavyBleeding, itemProps.EffectsDamage);
+                count++;
             }
         }
+        return count;
     }
 
-    private void UpdateMedkitConfigData(JsonObject medkitConfig, Dictionary<MongoId, TemplateItem> itemsDb)
+    private int UpdateMedkitConfigData(JsonObject medkitConfig, Dictionary<MongoId, TemplateItem> itemsDb)
     {
+        int count = 0;
         foreach (var entry in medkitConfig)
         {
             string medicationId = entry.Key;
@@ -128,8 +134,10 @@ public class BalancedMeds(ISptLogger<BalancedMeds> logger, DatabaseServer databa
                 ApplyDamageEffects(damageEffectData, "RadExposure", DamageEffectType.RadExposure, itemProps.EffectsDamage);
                 ApplyDamageEffects(damageEffectData, "Fracture", DamageEffectType.Fracture, itemProps.EffectsDamage);
                 ApplyDamageEffects(damageEffectData, "HeavyBleeding", DamageEffectType.HeavyBleeding, itemProps.EffectsDamage);
+                count++;
             }
         }
+        return count;
     }
 
     private void UpdateStimulatorConfigData(JsonObject stimulatorConfig,

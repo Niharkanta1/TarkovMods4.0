@@ -1,45 +1,44 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace LogToConsole;
 
-public record ModMetadata : AbstractModMetadata
+public record ModMetadata : IModMetadata
 {
-    public override string ModGuid { get; init; } = "com.sp-tarkov.deadwolf.usefulfoodsanddrinks";
-    public override string Name { get; init; } = "UsefulFoodsAndDrinks";
-    public override string Author { get; init; } = "SPTarkov";
-    public override List<string>? Contributors { get; init; }
-    public override SemanticVersioning.Version Version { get; init; } = new("1.0.1");
-    public override SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
-    public override List<string>? Incompatibilities { get; init; }
-    public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
-    public override string? Url { get; init; } = "https://github.com/sp-tarkov/server-mod-examples";
-    public override bool? IsBundleMod { get; init; } = false;
-    public override string? License { get; init; } = "MIT";
+    public string ModGuid { get; init; } = "com.deadwolf.spt.usefulfoodsanddrinks";
+    public string Name { get; init; } = "UsefulFoodsAndDrinks";
+    public string Author { get; init; } = "SPTarkov";
+    public List<string>? Contributors { get; init; }
+    public SemanticVersioning.Version Version { get; init; } = new("2.0.0");
+    public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
+    public List<string>? Incompatibilities { get; init; }
+    public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
+    public string? Url { get; init; } = "https://github.com/Niharkanta1/TarkovMods4.0";
+    public bool? IsBundleMod { get; init; } = false;
+    public string? License { get; init; } = "MIT";
+    public bool HasPrepatcher { get; init; } = false;
 }
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class UsefulFoodsAndDrinks(ISptLogger<UsefulFoodsAndDrinks> logger, DatabaseServer databaseServcer) : IOnLoad
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
+public class UsefulFoodsAndDrinks(ISptLogger<UsefulFoodsAndDrinks> logger, TemplateTable templateTable, GlobalTable globalTable) : IOnLoad
 {
 
     Dictionary<MongoId, TemplateItem> itemsDb = null!;
 
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
         logger.Info("[UsefulFoodsAndDrinks] Initalizing...");
         int count = 0;
         JsonObject config = LoadJson("user/mods/UsefulFoodsAndDrinks/config/config.json");
 
-        itemsDb = databaseServcer.GetTables().Templates.Items;
+        itemsDb = templateTable.Items;
         foreach (var entry in config)
         {
             MongoId itemId = new(entry.Key);
@@ -86,7 +85,7 @@ public class UsefulFoodsAndDrinks(ISptLogger<UsefulFoodsAndDrinks> logger, Datab
         }
 
         logger.Info($"[UsefulFoodsAndDrinks] Updated {count} Foods/Drinks...");
-        logger.LogWithColor("[UsefulFoodsAndDrinks] Loading UsefulFoodsAndDrinks Mod Is Completed.", LogTextColor.Green);
+        logger.LogWithColor("[UsefulFoodsAndDrinks] Loading UsefulFoodsAndDrinks Mod Is Completed.", Spectre.Console.Color.Green);
         return Task.CompletedTask;
     }
 

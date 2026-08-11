@@ -1,32 +1,33 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using System.Text.Json.Nodes;
-using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Tables;
+using SPTarkov.Common.Models.Logging;
 
 namespace BetterAttachments;
 
-public record ModMetadata : AbstractModMetadata
+public record ModMetadata : IModMetadata
 {
-    public override string ModGuid { get; init; } = "com.sp-tarkov.deadwolf.betterattachments";
-    public override string Name { get; init; } = "BetterAttachments";
-    public override string Author { get; init; } = "SPTarkov";
-    public override List<string>? Contributors { get; init; }
-    public override SemanticVersioning.Version Version { get; init; } = new("1.0.0");
-    public override SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
-    public override List<string>? Incompatibilities { get; init; }
-    public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
-    public override string? Url { get; init; } = "";
-    public override bool? IsBundleMod { get; init; } = false;
-    public override string? License { get; init; } = "MIT";
+    public string ModGuid { get; init; } = "com.deadwolf.spt.betterattachments";
+    public string Name { get; init; } = "BetterAttachments";
+    public string Author { get; init; } = "DeadW0Lf";
+    public List<string>? Contributors { get; init; }
+    public SemanticVersioning.Version Version { get; init; } = new("2.0.0");
+    public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
+    public List<string>? Incompatibilities { get; init; }
+    public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
+    public string? Url { get; init; } = "https://github.com/Niharkanta1/TarkovMods4.0";
+    public bool? IsBundleMod { get; init; } = false;
+    public string? License { get; init; } = "MIT";
+    public bool HasPrepatcher { get; init; } = false;
 }
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class BetterAttachments(ISptLogger<BetterAttachments> logger, DatabaseServer databaseServcer) : IOnLoad
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
+public class BetterAttachments(ISptLogger<BetterAttachments> logger, TemplateTable templateTable, GlobalTable globalTable) : IOnLoad
 {
     Dictionary<MongoId, TemplateItem> itemsDb = null!;
 
@@ -62,10 +63,10 @@ public class BetterAttachments(ISptLogger<BetterAttachments> logger, DatabaseSer
         BaseClasses.TACTICAL_COMBO
     ];
 
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken cancellationToken)
     {
-        logger.LogWithColor("[BetterAttachments] Initalizing BalancedMeds mod...", LogTextColor.Green);
-        itemsDb = databaseServcer.GetTables().Templates.Items;
+        logger.LogWithColor("[BetterAttachments] Initalizing BalancedMeds mod...", Spectre.Console.Color.Green);
+        itemsDb = templateTable.Items;
 
         var config = LoadJson("user/mods/BetterAttachments/config/config.json");
         betterForegrips = config["betterForegrips"]!.GetValue<bool>();
@@ -177,7 +178,7 @@ public class BetterAttachments(ISptLogger<BetterAttachments> logger, DatabaseSer
             }
         }
         logger.Info($"[BetterAttachments] Updated {count} attachments...");
-        logger.LogWithColor("[BetterAttachments] Loading BalancedMeds Mod Completed.", LogTextColor.Green);
+        logger.LogWithColor("[BetterAttachments] Loading BalancedMeds Mod Completed.", Spectre.Console.Color.Green);
         return Task.CompletedTask;
     }
 
