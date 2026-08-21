@@ -97,10 +97,10 @@ public class ReadableKeys(
                 if (modConfig.config != null && modConfig.config.ContainsKey(itemId))
                 {
                     // Get the English name to match against mapWithKeys.json
-                    string itemNameLocal = enLocales.ContainsKey($"{itemId} Name") ? enLocales[$"{itemId} Name"] : "";
+                    //string itemNameLocal = enLocales.ContainsKey($"{itemId} Name") ? enLocales[$"{itemId} Name"] : "";
 
-                    string mapName = FindMapForItem(itemNameLocal, mapWithKeys);
-                    logger.LogWithColor($"[ReadableKeys] Processing item ID: {itemId} - Name: {itemNameLocal}. Found map: {mapName}", Spectre.Console.Color.Green);
+                    string mapName = FindMapForItem(itemId, mapWithKeys);
+                    //logger.LogWithColor($"[ReadableKeys] Processing item ID: {itemId} - Name: {itemNameLocal}. Found map: {mapName}", Spectre.Console.Color.Green);
 
                     if (!string.IsNullOrEmpty(mapName))
                     {
@@ -176,6 +176,10 @@ public class ReadableKeys(
         {
             itemProps.MaximumNumberOfUsage = itemConfig.noofuse;
         }
+        else
+        {
+            itemProps.MaximumNumberOfUsage = 50; // Default value if not specified in config
+        }
 
         if (multiplier > 0)
         {
@@ -183,16 +187,16 @@ public class ReadableKeys(
         }
     }
 
-    private string FindMapForItem(string itemName, Dictionary<string, List<string>> mapWithKeys)
+    private string FindMapForItem(string itemId, Dictionary<string, List<string>> mapWithKeys)
     {
-        if (string.IsNullOrEmpty(itemName) || mapWithKeys == null) return null;
+        if (string.IsNullOrEmpty(itemId) || mapWithKeys == null) return null;
 
         foreach (var entry in mapWithKeys)
         {
             string mapName = entry.Key;
             List<string> items = entry.Value;
 
-            if (items != null && items.Contains(itemName))
+            if (items != null && items.Contains(itemId))
             {
                 return mapName;
             }

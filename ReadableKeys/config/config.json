@@ -13,7 +13,9 @@
     "RESERVE": "RB",
     "LAB": "LB",
     "STREETS": "ST",
-    "GROUNDZERO": "GZ"
+    "GROUNDZERO": "GZ",
+    "LABYRINTH": "LR",
+    "JUNK": "JUNK"
   },
   "config": {
     "5448ba0b4bdc2d02308b456c": {
