@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>ReadableKeys</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <Version>1.0.1</Version>
+    <!-- The two lines below will set the output path for the binaries -->
+    <OutputPath>bin\$(Configuration)\SPT\user\mods\$(ProjectName)\$(AssemblyName)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- ZIP -->
+    <ZipFileName>ReadableKeys_v4_0_13.zip</ZipFileName>
+    <ZipOutputPath>bin\$(Configuration)\$(ZipFileName)</ZipOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SPTarkov.Common" Version="4.0.13" />
+    <PackageReference Include="SPTarkov.DI" Version="4.0.13" />
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.13" />
+	  <None Include="config\**\*" CopyToOutputDirectory="Always"/>
+  </ItemGroup>
+  
+  <Target Name="CreateReleaseZip"
+        AfterTargets="Build"
+        Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ZipSourcePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\SPT</ZipSourcePath>
+      <ZipOutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(ZipFileName)</ZipOutputPath>
+    </PropertyGroup>
+    <Message Text="Creating release ZIP: $(ZipOutputPath)" Importance="high" />
+    <Delete Files="$(ZipOutputPath)" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Compress-Archive -Path '$(ZipSourcePath)' -DestinationPath '$(ZipOutputPath)' -Force&quot;" />
+  </Target>
+
+</Project>
