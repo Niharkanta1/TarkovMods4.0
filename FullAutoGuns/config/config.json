@@ -1,0 +1,62 @@
+{
+	"59e6152586f77473dc057aa1": {
+		"name": "Molot Arms VPO-136 Vepr-KM 7.62x39 carbine",
+		"bFirerate": 600,
+		"enabled": true
+	},
+	"59e6687d86f77411d949b251": {
+		"name": "Molot Arms VPO-209 .366 TKM carbine",
+		"bFirerate": 600,
+		"enabled": true
+	},
+	"59f9cabd86f7743a10721f46": {
+		"name": "Saiga-9 9x19 carbine",
+		"bFirerate": 800,
+		"enabled": true
+	},
+	"5c07c60e0db834002330051f": {
+		"name": "ADAR 2-15 5.56x45 carbine",
+		"bFirerate": 600,
+		"enabled": true
+	},
+	"5c501a4d2e221602b412b540": {
+		"name": "Molot Arms VPO-101 Vepr-Hunter 7.62x51 carbine",
+		"bFirerate": 600,
+		"enabled": true
+	},
+	"5d43021ca4b9362eab4b5e25": {
+		"name": "Lone Star TX-15 DML 5.56x45 carbine",
+		"bFirerate": 800,
+		"enabled": true
+	},
+	"60339954d62c9b14ed777c06": {
+		"name": "Soyuz-TM STM-9 Gen.2 9x19 carbine",
+		"bFirerate": 800,
+		"enabled": true
+	},
+	"628b5638ad252a16da6dd245": {
+		"name": "SAG AK-545 5.45x39 carbine",
+		"bFirerate": 650,
+		"enabled": true
+	},
+	"628b9c37a733087d0d7fe84b": {
+		"name": "SAG AK-545 Short 5.45x39 carbine",
+		"bFirerate": 650,
+		"enabled": true
+	},
+	"63088377b5cd696784087147": {
+		"name": "Glock 19X 9x19 pistol",
+		"bFirerate": 900,
+		"enabled": true
+	},
+	"5a7ae0c351dfba0017554310": {
+		"name": "Glock 17 9x19 pistol",
+		"bFirerate": 850,
+		"enabled": true
+	},
+	"5f2a9575926fd9352339381f": {
+		"name": "Kel-Tec RFB 7.62x51 rifle",
+		"bFirerate": 700,
+		"enabled": true
+	}
+}
