@@ -12,7 +12,7 @@ namespace LogToConsole;
 
 public record ModMetadata : IModMetadata
 {
-    public string ModGuid { get; init; } = "com.deadwolf.spt.balancedmeds";
+    public string ModGuid { get; init; } = "com.deadwolf.spt.fullautoguns";
     public string Name { get; init; } = "FullAutoGuns";
     public string Author { get; init; } = "DeadW0Lf";
     public List<string>? Contributors { get; init; }
