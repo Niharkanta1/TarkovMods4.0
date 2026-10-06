@@ -2,11 +2,11 @@
   "PriceConfig": {
     "DefaultMultiplier": 1.0,
     "RarityTiers": [
-      { "Name": "Common", "MinValue": 20000, "Multiplier": 0.7 },
-      { "Name": "Uncommon", "MinValue": 50000, "Multiplier": 0.8 },
-      { "Name": "Rare", "MinValue": 80000, "Multiplier": 0.85 },
-      { "Name": "Epic", "MinValue": 100000, "Multiplier": 0.9 },
-      { "Name": "Legendary", "MinValue": 150000, "Multiplier": 0.95 }
+      { "Name": "Common", "MinValue": 0, "Multiplier": 0.4 },
+      { "Name": "Uncommon", "MinValue": 5000, "Multiplier": 0.55 },
+      { "Name": "Rare", "MinValue": 10000, "Multiplier": 0.6 },
+      { "Name": "Epic", "MinValue": 30000, "Multiplier": 0.6 },
+      { "Name": "Legendary", "MinValue": 50000, "Multiplier": 0.7 }
     ]
   },
   "Base": {

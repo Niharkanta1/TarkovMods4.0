@@ -3,7 +3,18 @@ using SPTarkov.Server.Core.Models.Common;
 
 namespace Gunwright.Pricing;
 
-public readonly record struct PresetPrice(int Amount, string RarityName);
+public readonly record struct PriceBreakdown(
+    MongoId Template,
+    double RawValue,
+    double ModifiedValue,
+    double Multiplier,
+    string RarityName);
+
+public readonly record struct PresetPrice(
+    int Amount,
+    string RarityName,
+    double RawTotal,
+    IReadOnlyList<PriceBreakdown> Breakdown);
 
 public class PresetPriceCalculator
 {
@@ -14,7 +25,9 @@ public class PresetPriceCalculator
     public PresetPriceCalculator(ItemHelper itemHelper, PriceConfig? config)
     {
         _itemHelper = itemHelper;
+
         _defaultMultiplier = config?.DefaultMultiplier ?? 1.0;
+
         _tiersAscending = (config?.RarityTiers ?? [])
             .OrderBy(tier => tier.MinValue)
             .ToList();
@@ -22,21 +35,50 @@ public class PresetPriceCalculator
 
     public PresetPrice Compute(IEnumerable<MongoId> templates)
     {
-        var rawValue = 0.0;
+        var breakdown = new List<PriceBreakdown>();
+
+        var rawTotal = 0.0;
+        var modifiedTotal = 0.0;
+
         foreach (var template in templates)
         {
             var minPrice = _itemHelper.GetItemPrice(template) ?? 0;
             var maxPrice = _itemHelper.GetItemMaxPrice(template);
-            rawValue += (minPrice + maxPrice) / 2.0;
+
+            // Average min/max price of the item
+            var rawValue = (minPrice + maxPrice) / 2.0;
+
+            // Resolve rarity and multiplier for THIS item
+            var (multiplier, rarityName) = ResolveTier(rawValue);
+
+            var modifiedValue = rawValue * multiplier;
+
+            rawTotal += rawValue;
+            modifiedTotal += modifiedValue;
+
+            breakdown.Add(new PriceBreakdown(
+                template,
+                rawValue,
+                modifiedValue,
+                multiplier,
+                rarityName));
         }
 
-        var (multiplier, rarityName) = ResolveTier(rawValue);
-        return new PresetPrice((int)(rawValue * multiplier), rarityName);
+        // Overall rarity of the complete preset is based
+        // on the total raw value.
+        var (_, presetRarityName) = ResolveTier(rawTotal);
+
+        return new PresetPrice(
+            (int)modifiedTotal,
+            presetRarityName,
+            rawTotal,
+            breakdown);
     }
 
     private (double Multiplier, string RarityName) ResolveTier(double rawValue)
     {
         RarityTier? matched = null;
+
         foreach (var tier in _tiersAscending)
         {
             if (rawValue < tier.MinValue)
@@ -47,12 +89,15 @@ public class PresetPriceCalculator
             matched = tier;
         }
 
-        // _defaultMultiplier == 1, use the matched tier; otherwise use _defaultMultiplier directly
+        // If DefaultMultiplier is 1,
+        // use the matched rarity multiplier.
         if (_defaultMultiplier == 1 && matched is not null)
         {
             return (matched.Multiplier, matched.Name);
         }
 
+        // If DefaultMultiplier is anything other than 1,
+        // use it directly.
         return (_defaultMultiplier, "Default");
     }
 }

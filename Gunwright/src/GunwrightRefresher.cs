@@ -186,6 +186,21 @@ public class GunwrightRefresher(
 
                 logger.Debug(
                     $"[Gunwright]: Added build '{buildName}' ({build.Id}) (price: {price.Amount}₽ [{price.RarityName}])");
+
+                foreach (var item in price.Breakdown)
+                {
+                    logger.Debug(
+                        $"[Gunwright]:   {item.Template}: " +
+                        $"Raw = {item.RawValue:N0}₽ → " +
+                        $"Modified = {item.ModifiedValue:N0}₽");
+                }
+
+                logger.Debug(
+                    $"[Gunwright]:   TOTAL: " +
+                    $"Raw = {price.RawTotal:N0}₽ → " +
+                    $"Modified = {price.Amount:N0}₽ " +
+                    $"[{price.RarityName}]");
+
                 syncedCount++;
             }
         }
