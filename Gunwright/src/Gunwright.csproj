@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>$(SolutionDir)Build\$(Configuration)\SPT_Runtime\user\mods\$(MSBuildProjectName)\</OutputPath>
+		<IntermediateOutputPath>$(SolutionDir)\Build\Intermediate\$(MSBuildProjectName)\$(Configuration)\</IntermediateOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SPTushonka.Common" Version="4.1.5" />
+		<PackageReference Include="SPTushonka.DI" Version="4.1.5" />
+		<PackageReference Include="SPTushonka.Server.Core" Version="4.1.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="db\gunwright.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="db\config.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="PackageModZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+		<PropertyGroup>
+			<ModReleaseDir>$(SolutionDir)Build\$(Configuration)\</ModReleaseDir>
+			<ModZipPath>$(SolutionDir)Build\$(MSBuildProjectName).zip</ModZipPath>
+		</PropertyGroup>
+		<ZipDirectory
+			SourceDirectory="$(ModReleaseDir)"
+			DestinationFile="$(ModZipPath)"
+			Overwrite="true" />
+		<Message Importance="high" Text="[Gunwright] Packaged release zip: $(ModZipPath)" />
+	</Target>
+
+</Project>
