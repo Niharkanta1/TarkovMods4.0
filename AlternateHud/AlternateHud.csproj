@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>AlternateHud</AssemblyName>
     <RootNamespace>AlternateHud</RootNamespace>
+    <Version>1.0.0</Version>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -43,24 +44,38 @@
     <Copy SourceFiles="@(ThemeFiles)" DestinationFiles="@(ThemeFiles->'$(SptPath)\BepInEx\plugins\AlternateHud\Themes\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
-  <Target Name="PackageMod" AfterTargets="Build">
+  <Target Name="GeneratePluginInfo" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <GeneratedPluginInfoFile>$(IntermediateOutputPath)PluginInfo.g.cs</GeneratedPluginInfoFile>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(GeneratedPluginInfoFile)"
+                      Lines="namespace AlternateHud { internal static class PluginInfo { internal const string Version = &quot;$(Version)&quot;%3B } }"
+                      Overwrite="true" />
+    <ItemGroup>
+      <Compile Include="$(GeneratedPluginInfoFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackageMod" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <PropertyGroup>
       <PackageDirectory>$(MSBuildProjectDirectory)\dist\AlternateHud</PackageDirectory>
-      <PackageArchive>$(MSBuildProjectDirectory)\dist\AlternateHud.zip</PackageArchive>
+      <PluginPackageDirectory>$(PackageDirectory)\BepInEx\plugins\AlternateHud</PluginPackageDirectory>
+      <PackageArchive>$(MSBuildProjectDirectory)\dist\AlternateHud-$(Version).zip</PackageArchive>
     </PropertyGroup>
 
     <RemoveDir Directories="$(PackageDirectory)" />
-    <MakeDir Directories="$(PackageDirectory)\Themes" />
-    <Copy SourceFiles="$(OutputPath)AlternateHud.dll" DestinationFolder="$(PackageDirectory)" />
+    <MakeDir Directories="$(PluginPackageDirectory)\Themes" />
+    <Copy SourceFiles="$(OutputPath)AlternateHud.dll" DestinationFolder="$(PluginPackageDirectory)" />
 
     <ItemGroup>
       <PackageThemeFiles Include="Themes\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageThemeFiles)"
-          DestinationFiles="@(PackageThemeFiles->'$(PackageDirectory)\Themes\%(RecursiveDir)%(Filename)%(Extension)')" />
+          DestinationFiles="@(PackageThemeFiles->'$(PluginPackageDirectory)\Themes\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="README.md" DestinationFiles="$(PackageDirectory)\README.md" />
 
     <ZipDirectory SourceDirectory="$(PackageDirectory)" DestinationFile="$(PackageArchive)" Overwrite="true" />
+    <Delete Files="$(MSBuildProjectDirectory)\dist\AlternateHud.zip" />
   </Target>
 
 </Project>

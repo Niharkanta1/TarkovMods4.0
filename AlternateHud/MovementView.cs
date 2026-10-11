@@ -26,7 +26,7 @@ namespace AlternateHud
         private readonly Vector2 _staminaIconPosition, _staminaTextPosition, _staminaBarPosition;
         private readonly Vector2 _handsTextPosition, _handsBarPosition;
         private int _speedTier;
-        private string _lastSpeedIcon;
+        private string _lastSpeedIcon, _lastStanceIcon;
 
         public MovementView(Transform parent, Theme theme)
         {
@@ -158,7 +158,11 @@ namespace AlternateHud
                     : player.IsInPronePose ? _stanceProneIcon
                     : poseLevel < 0.5f ? _stanceCrouchIcon
                     : _stanceStandIcon;
-                _stanceIcon.sprite = _theme.LoadSprite(System.IO.Path.Combine("Icons", icon));
+                if (icon != _lastStanceIcon)
+                {
+                    _lastStanceIcon = icon;
+                    _stanceIcon.sprite = _theme.LoadSprite(System.IO.Path.Combine("Icons", icon));
+                }
                 _stanceIcon.color = _theme.IconColor("stance", _theme.Good);
             }
 

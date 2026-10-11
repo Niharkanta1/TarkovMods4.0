@@ -22,6 +22,9 @@ namespace AlternateHud
         private string _lastWeaponKey;
         private string _localizedWeaponName;
         private string _lastWeaponIcon, _lastAmmoIcon;
+        private Player _lastGrenadePlayer;
+        private int _lastGrenadeScanFrame = -1;
+        private int _lastGrenadeCount = -1;
         private readonly Vector2 _weaponIconPos, _weaponTextPos, _ammoIconPos, _ammoTextPos;
         private readonly Vector2 _grenadeIconPos, _grenadeTextPos;
 
@@ -138,12 +141,13 @@ namespace AlternateHud
             if (weaponKey != _lastWeaponKey)
             {
                 _lastWeaponKey = weaponKey;
-                _localizedWeaponName = weaponKey != null ? HudLocalization.Localized(weaponKey) : "UNARMED";
+                _localizedWeaponName = (weaponKey != null ? HudLocalization.Localized(weaponKey) : "UNARMED")
+                    .ToUpperInvariant();
             }
 
-            _weaponName.text = _localizedWeaponName.ToUpperInvariant();
+            _weaponName.text = _localizedWeaponName;
             var weaponIcon = WeaponIcon(item, weapon);
-            var ammoIcon = AmmoIcon(weapon);
+            var ammoIcon = AmmoIcon(item, weapon);
             SetIcon(_weaponIcon, ref _lastWeaponIcon, weaponIcon);
             SetIcon(_ammoIcon, ref _lastAmmoIcon, ammoIcon);
             if (_weaponIcon) _weaponIcon.color = _theme.IconColor(WeaponColorKey(item, weapon), _theme.Text);
@@ -152,9 +156,16 @@ namespace AlternateHud
                 ? weapon.GetCurrentMagazineCount() + "/" + weapon.GetMaxMagazineCount()
                 : "--/--";
 
-            var grenadeCount = CountGrenades(player);
-            _grenades.text = _cards ? grenadeCount.ToString()
-                : _settings.Str("grenadeLabel", "GRENADES") + "  " + grenadeCount;
+            // Inventory traversal is relatively expensive, so refresh grenade counts every 20 frames.
+            if (_lastGrenadePlayer != player || _lastGrenadeScanFrame < 0 ||
+                Time.frameCount - _lastGrenadeScanFrame >= 20)
+            {
+                _lastGrenadePlayer = player;
+                _lastGrenadeScanFrame = Time.frameCount;
+                _lastGrenadeCount = CountGrenades(player);
+                _grenades.text = _cards ? _lastGrenadeCount.ToString()
+                    : _settings.Str("grenadeLabel", "GRENADES") + "  " + _lastGrenadeCount;
+            }
         }
 
         public void Preview()
@@ -270,32 +281,30 @@ namespace AlternateHud
             return "smallAmmo";
         }
 
-        private string AmmoIcon(Weapon weapon)
+        private string AmmoIcon(Item item, Weapon weapon)
         {
-            var caliber = weapon != null ? weapon.AmmoCaliber ?? "" : "";
-            if (caliber.IndexOf("12", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("338", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("762x51", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("762x54", StringComparison.OrdinalIgnoreCase) >= 0)
-                return _settings.Str("largeAmmoIcon", "ammo_large.png");
-            if (caliber.IndexOf("545", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("556", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("762x39", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("939", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                caliber.IndexOf("68x", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (weapon == null) return _settings.Str("mediumAmmoIcon", "ammo_medium.png");
+
+            var kind = weapon.WeapClass ?? "";
+            if (IsShotgun(weapon, kind, item != null ? item.ShortName : ""))
                 return _settings.Str("mediumAmmoIcon", "ammo_medium.png");
-            return _settings.Str("smallAmmoIcon", "ammo_small.png");
+            if (string.Equals(kind, "smg", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(kind, "pistol", StringComparison.OrdinalIgnoreCase))
+                return _settings.Str("smallAmmoIcon", "ammo_small.png");
+            if (string.Equals(kind, "sniperRifle", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(kind, "machinegun", StringComparison.OrdinalIgnoreCase))
+                return _settings.Str("largeAmmoIcon", "ammo_large.png");
+            return _settings.Str("mediumAmmoIcon", "ammo_medium.png");
         }
 
         private static int CountGrenades(Player player)
         {
-            var equipment = player.Inventory?.Equipment;
-            if (equipment == null) return 0;
+            var slots = player.Inventory?.Equipment?.Slots;
+            if (slots == null) return 0;
 
-            var count = 0;
-            foreach (var slot in equipment.GrenadeThrowingSlots)
-                if (slot?.ContainedItem != null)
-                    count += CountGrenadeItems(slot.ContainedItem);
+            // Rig and pockets hold the inventory contents; grenade quick slots can reference the same items.
+            var count = slots.Length > 6 ? CountGrenadeItems(slots[6]?.ContainedItem) : 0;
+            if (slots.Length > 10) count += CountGrenadeItems(slots[10]?.ContainedItem);
             return count;
         }
 
@@ -304,6 +313,10 @@ namespace AlternateHud
             var count = item is ThrowWeap ? Math.Max(1, item.StackObjectsCount) : 0;
             var compound = item as CompoundItem;
             if (compound == null) return count;
+
+            foreach (var grid in compound.Grids)
+                foreach (var containedItem in grid.Items)
+                    count += CountGrenadeItems(containedItem);
 
             foreach (var slot in compound.Slots)
                 if (slot?.ContainedItem != null)

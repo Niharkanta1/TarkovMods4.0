@@ -8,7 +8,7 @@ Themes live in `BepInEx/plugins/AlternateHud/Themes/<ThemeName>/`. Copy the `Min
 
 ## Install a build
 
-Every `dotnet build` creates a ready-to-copy plugin folder at `dist/AlternateHud` and a `dist/AlternateHud.zip` archive. Copy the **contents** of the folder into `<SPT install>/BepInEx/plugins/AlternateHud`, or extract the ZIP directly into that directory. It contains the plugin DLL, themes, and this readme. `dotnet build -c Release` produces the same package using the Release DLL. When the configured SPT installation is present, the build also deploys the plugin there automatically.
+`dotnet build -c Release` creates `dist/AlternateHud-1.0.0.zip`, with the plugin DLL and themes under `BepInEx/plugins/AlternateHud`, ready to extract into the SPT installation directory. The ZIP also includes this readme at its root. The archive suffix and BepInEx plugin version both come from the project `Version` property. When the configured SPT installation is present, the build also deploys the plugin there automatically.
 
 Theme positions use the 1920x1080 canvas reference, with positive X to the right and positive Y upwards from the selected anchor. Colors accept `#RRGGBB` or `#RRGGBBAA`. Every theme element and attribute is optional; omitted attributes use the built-in defaults.
 
@@ -25,6 +25,8 @@ The Minimal theme shows active light/heavy bleeding, fractures and pain beside t
 Movement speed is rounded to stable even-numbered tiers from **2 to 14 KM/H**, with hysteresis to reduce flickering. Minimal uses six configurable volume-level icons instead of separate walking/running icons. Speed levels 2-3, 4-5, 6-7, 8-9, 10-11, and 12+ map to icon levels 0-5; TextOnly shows the speed value as text. Stamina labels are hidden while current/maximum values appear beside the thin bars.
 
 The Minimal weapon, magazine, and grenade display uses three compact horizontal groups styled after the supplied reference image. The background is transparent; icon sizes, group widths and spacing can be changed in the `<Equipment>` section of the theme.
+
+The ammo icon follows weapon class: assault rifles, assault carbines and shotguns use medium ammo; SMGs and pistols use small ammo; sniper rifles and machineguns use large ammo. Other weapon classes default to medium. The grenade count includes throwable items in the equipped rig and pockets.
 
 Use **Show All HUD** as the master visibility switch. Independent F12 toggles control stance, the volume/sprint indicator, weapon name/icon, ammo, grenades, and both stamina bars. **Leg Stamina Bar X/Y** and **Hand Stamina Bar X/Y** independently position the two bars without moving their value text.
 

@@ -39,6 +39,7 @@ namespace AlternateHud
         private readonly Dictionary<EBodyPart, float> _flash = new Dictionary<EBodyPart, float>();
         private readonly Dictionary<EBodyPart, float> _shown = new Dictionary<EBodyPart, float>();
         private readonly List<StatUi> _stats = new List<StatUi>();
+        private readonly List<string> _issues = new List<string>(7);
         private readonly Text _status;
         private readonly RectTransform _silhouette;
         private readonly Vector2 _silhouettePosition;
@@ -282,7 +283,7 @@ namespace AlternateHud
                 }
             }
 
-            var issues = new List<string>();
+            _issues.Clear();
             foreach (var kv in _parts)
             {
                 var part = kv.Key;
@@ -297,11 +298,11 @@ namespace AlternateHud
                 c.a = _silOpacity;
                 kv.Value.color = c;
 
-                if (destroyed) issues.Add(Name(part) + " LOST");
-                else if (hc.IsBodyPartBroken(part)) issues.Add(Name(part) + " BROKEN");
+                if (destroyed) _issues.Add(Name(part) + " LOST");
+                else if (hc.IsBodyPartBroken(part)) _issues.Add(Name(part) + " BROKEN");
             }
 
-            if (_status) _status.text = string.Join("  ", issues);
+            if (_status) _status.text = string.Join("  ", _issues);
         }
 
         private static bool IsLabelEnabled(string id)

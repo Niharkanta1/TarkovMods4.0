@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AlternateHud
 {
-    [BepInPlugin("com.deadly.hud", "AlternateHud", "1.0.0")]
+    [BepInPlugin("com.deadly.hud", "AlternateHud", PluginInfo.Version)]
     public class AlternateHudPlugin : BaseUnityPlugin
     {
         internal static ManualLogSource Log;
