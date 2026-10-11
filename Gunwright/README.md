@@ -68,4 +68,4 @@ Output goes to `Build\Release\SPT_Runtime\user\mods\Gunwright`. A Release build 
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[MIT](https://mit-license.org/)
