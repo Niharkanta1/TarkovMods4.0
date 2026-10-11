@@ -1,0 +1,138 @@
+﻿<Theme name="TarkovMinimal">
+  <Font name="Bender" shadow="true" />
+
+  <!-- Escape from Tarkov inspired military palette -->
+  <Colors
+      good="#7DB16E"
+      warn="#C6A65A"
+      bad="#C34B3F"
+      text="#C6C8C2"
+      dim="#7A8078"
+      highlight="#D6B75A"
+      lost="#493B35" />
+
+  <Vitals show="true" anchor="TopLeft" x="20" y="-20" scale="1">
+    <Silhouette show="true" prefix="body_minimal"
+                image="body_minimal_silhouette.png" outline="none"
+                maskMode="luminance" maskThreshold="0.84"
+                maskSoftness="0.12"
+                x="0" y="-130" width="86" height="132"
+                opacity="0.94" baseColor="#C6C8C224"
+                flash="true" />
+
+    <Stat id="Health" label="HEALTH" showLabel="true"
+          x="102" y="-35" size="19" labelSize="9"
+          color="#7DB16E" barWidth="66" barHeight="1"
+          suffix="/{max}" />
+
+    <Stat id="Energy" label="ENERGY" showLabel="true"
+          x="102" y="-78" size="19" labelSize="9"
+          color="#C6A65A" barWidth="66" barHeight="1"
+          suffix="/{max}" />
+
+    <Stat id="Hydration" label="HYDRATION" showLabel="true"
+          x="102" y="-121" size="19" labelSize="9"
+          color="#7FA9B0" barWidth="66" barHeight="1"
+          suffix="/{max}" />
+
+    <Status show="true" x="0" y="-168" size="11" />
+  </Vitals>
+
+  <Icons enabled="true" />
+
+  <IconColors
+      weapon="#C6C8C2"
+      assaultRifle="#C34B3F"
+      assaultCarbine="#B87949"
+      sniper="#A69AAE"
+      smg="#C6A65A"
+      lmg="#B5A078"
+      pistol="#8DAFB5"
+      shotgun="#C34B3F"
+      knife="#C34B3F"
+      ammo="#C6C8C2"
+      smallAmmo="#8DAFB5"
+      mediumAmmo="#C6A65A"
+      largeAmmo="#C34B3F"
+      grenade="#C34B3F"
+      stance="#7DB16E"
+      movement="#7FA9B0"
+      movementRun="#C6A65A"
+      stamina="#7DB16E"
+      lightBleed="#C34B3F"
+      heavyBleed="#A83232"
+      fracture="#C6A65A"
+      pain="#D6B75A" />
+
+  <Effects show="true" anchor="TopLeft"
+          x="282" y="-40" iconSize="17"
+          rowHeight="22" fontSize="12"
+          lightBleedIcon="bleed_light.png"
+          heavyBleedIcon="bleed_heavy.png"
+          fractureIcon="fracture.png"
+          painIcon="pain.png" />
+
+  <Equipment show="true" anchor="BottomRight"
+             x="-20" y="20" cards="true"
+             weaponPanelWidth="146" ammoPanelWidth="90"
+             grenadePanelWidth="64" panelHeight="46"
+             panelGap="2" iconSize="40"
+             weaponIconSize="44" ammoIconSize="28"
+             grenadeIconSize="26" rowHeight="42"
+             fontSize="14" ammoSize="20"
+             weaponIcon="weapon.png" ammoIcon="ammo.png"
+             grenadeIcon="grenade.png" grenadeLabel="GRENADES"
+             assaultRifleIcon="weapon_assault_rifle.png"
+             assaultCarbineIcon="weapon_assault_carbine.png"
+             sniperIcon="weapon_sniper.png"
+             shotgunIcon="weapon_shotgun.png"
+             smgIcon="weapon_smg.png"
+             lmgIcon="weapon_lmg.png"
+             pistolIcon="weapon_pistol.png"
+             knifeIcon="weapon_knife.png"
+             smallAmmoIcon="ammo_small.png"
+             mediumAmmoIcon="ammo_medium.png"
+             largeAmmoIcon="ammo_large.png" />
+
+  <Movement show="true" anchor="BottomLeft"
+            x="20" y="40" iconSize="18"
+            stanceIconSize="32" speedIconSize="24"
+            fontSize="12" showStanceText="false"
+            showSpeedText="false" staminaBarWidth="120"
+            staminaBarHeight="2" stanceX="0" stanceY="78"
+            speedX="42" speedY="78" staminaX="126"
+            staminaY="18" staminaBarX="0" staminaBarY="18"
+            handsStaminaX="126" handsStaminaY="-20"
+            handsBarX="0" handsBarY="-20"
+            stanceIcon="stance_stand.png"
+            crouchIcon="stance_crouch.png"
+            proneIcon="stance_prone.png"
+            sprintIcon="stance_sprint.png"
+            staminaIcon="snamina.png"
+            speedIcon0="volume_0.png"
+            speedIcon1="volume_1.png"
+            speedIcon2="volume_2.png"
+            speedIcon3="volume_4.png"
+            speedIcon4="volume_5.png"
+            speedIcon5="volume_5.png" />
+
+  <HitMarker show="true" style="X"
+             thickness="1" length="5" gap="4"
+             duration="0.25" punch="1.08"
+             color="#DCE0D9"
+             headshotColor="#D6B75A"
+             killColor="#A83232" />
+
+  <DamageNumbers show="true" size="18"
+                 life="0.9" rise="55" />
+
+  <DamageDirection show="true" radius="190"
+                   length="55" thickness="1"
+                   life="1.5" color="#C34B3F" />
+
+  <KillFeed show="true" anchor="TopRight"
+            x="-20" y="-120" max="3" life="5"
+            size="14" spacing="2" grow="Down"
+            format="{name}  {c:#858A82}{weapon}  {distance}m  {part}{/c}"
+            headshotFormat="{name}  {c:#858A82}{weapon}  {distance}m{/c}  {c:#D6B75A}HEADSHOT{/c}" />
+</Theme>

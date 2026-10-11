@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AlternateHud theme. Copy this folder, rename it, set "Theme" in the BepInEx config (F12)
+  and press the reload key (default F9) in game to see changes instantly.
+
+  Every attribute is optional - missing values fall back to defaults.
+  Positions: x/y are pixels (1920x1080 reference) from the element's anchor; +x right, +y up.
+  Anchors: TopLeft TopCenter TopRight MiddleLeft Center MiddleRight BottomLeft BottomCenter BottomRight
+  Colors: #RRGGBB or #RRGGBBAA.
+  Text markup in formats: {c:#hex}..{/c} colour, {b}..{/b}, {i}..{/i}, {size:N}..{/size}
+-->
+<Theme name="Minimal">
+  <Font name="Bender" shadow="true" />
+  <Colors good="#a5dc76" warn="#e8c85a" bad="#df554e" text="#dce1df" dim="#858e8a" highlight="#f2cf5b" lost="#3a2a2a" />
+
+  <Vitals show="true" anchor="TopLeft" x="20" y="-20" scale="1">
+    <!-- Replace the transparent PNGs to change the silhouette art. All images use the same canvas. -->
+    <!-- This art stores each active body part in darker gray. Luminance mode extracts that region as its mask. -->
+    <Silhouette show="true" prefix="body_minimal" image="body_minimal_silhouette.png" outline="none"
+                maskMode="luminance" maskThreshold="0.84" maskSoftness="0.12"
+                x="0" y="-130" width="86" height="132" opacity="0.94"
+                baseColor="#dce1df24" flash="true" />
+    <!-- id: Health | Energy | Hydration. color="auto" tints by health. barHeight="0" hides the bar. -->
+    <Stat id="Health"    label="HEALTH"    showLabel="true" x="102" y="-35" size="19" labelSize="9" color="#a5dc76" barWidth="66" barHeight="1" suffix="/{max}" />
+    <Stat id="Energy"    label="ENERGY"    showLabel="true" x="102" y="-78" size="19" labelSize="9" color="#e8c85a" barWidth="66" barHeight="1" suffix="/{max}" />
+    <Stat id="Hydration" label="HYDRATION" showLabel="true" x="102" y="-121" size="19" labelSize="9" color="#64b8d4" barWidth="66" barHeight="1" suffix="/{max}" />
+    <Status show="true" x="0" y="-168" size="11" />
+  </Vitals>
+
+  <Icons enabled="true" />
+  <IconColors weapon="#dce1df" assaultRifle="#df554e" assaultCarbine="#e88a4a"
+              sniper="#d8a7e8" smg="#f2cf5b" lmg="#d0b078" pistol="#82c9d8" shotgun="#df554e" knife="#df554e"
+              ammo="#dce1df" smallAmmo="#82c9d8" mediumAmmo="#f2cf5b" largeAmmo="#df554e"
+              grenade="#df554e" stance="#a5dc76" movement="#64b8d4" movementRun="#f2cf5b"
+              stamina="#a5dc76" lightBleed="#df554e" heavyBleed="#d9473d"
+              fracture="#e8c85a" pain="#f2cf5b" />
+  <Effects show="true" anchor="TopLeft" x="282" y="-40" iconSize="17" rowHeight="22" fontSize="12"
+           lightBleedIcon="bleed_light.png" heavyBleedIcon="bleed_heavy.png"
+           fractureIcon="fracture.png" painIcon="pain.png" />
+  <Equipment show="true" anchor="BottomRight" x="-20" y="20" cards="true"
+             weaponPanelWidth="146" ammoPanelWidth="90" grenadePanelWidth="64"
+             panelHeight="46" panelGap="2"
+             iconSize="40" weaponIconSize="44" ammoIconSize="28" grenadeIconSize="26" rowHeight="42"
+             fontSize="14" ammoSize="20" weaponIcon="weapon.png" ammoIcon="ammo.png"
+             grenadeIcon="grenade.png" grenadeLabel="GRENADES"
+             assaultRifleIcon="weapon_assault_rifle.png" assaultCarbineIcon="weapon_assault_carbine.png"
+             sniperIcon="weapon_sniper.png" shotgunIcon="weapon_shotgun.png"
+             smgIcon="weapon_smg.png" lmgIcon="weapon_lmg.png"
+             pistolIcon="weapon_pistol.png" knifeIcon="weapon_knife.png"
+             smallAmmoIcon="ammo_small.png" mediumAmmoIcon="ammo_medium.png" largeAmmoIcon="ammo_large.png" />
+  <Movement show="true" anchor="BottomLeft" x="20" y="40" iconSize="18" stanceIconSize="32"
+            speedIconSize="24" fontSize="12" showStanceText="false" showSpeedText="false"
+            staminaBarWidth="120" staminaBarHeight="2" stanceX="0" stanceY="78"
+            speedX="42" speedY="78" staminaX="126" staminaY="18" staminaBarX="0" staminaBarY="18"
+            handsStaminaX="126" handsStaminaY="-20" handsBarX="0" handsBarY="-20"
+            stanceIcon="stance_stand.png" crouchIcon="stance_crouch.png"
+            proneIcon="stance_prone.png" sprintIcon="stance_sprint.png" staminaIcon="snamina.png"
+            speedIcon0="volume_0.png" speedIcon1="volume_1.png" speedIcon2="volume_2.png"
+            speedIcon3="volume_4.png" speedIcon4="volume_5.png" speedIcon5="volume_5.png" />
+
+  <!-- style: X or Cross. thickness can also be overridden in the BepInEx config. -->
+  <HitMarker show="true" style="X" thickness="1" length="5" gap="4" duration="0.25" punch="1.08"
+             color="#ffffff" headshotColor="#f2cf5b" killColor="#d9473d" />
+
+  <DamageNumbers show="true" size="18" life="0.9" rise="55" />
+
+  <DamageDirection show="true" radius="190" length="55" thickness="1" life="1.5" color="#d9473d" />
+
+  <!-- tokens: {name} {weapon} {distance} {part} {level} {tag} {kills} -->
+  <KillFeed show="true" anchor="TopRight" x="-20" y="-120" max="3" life="5" size="14" spacing="2" grow="Down"
+            format="{name}  {c:#858e8a}{weapon}  {distance}m  {part}{/c}"
+            headshotFormat="{name}  {c:#858e8a}{weapon}  {distance}m{/c}  {c:#f2cf5b}HEADSHOT{/c}" />
+</Theme>
