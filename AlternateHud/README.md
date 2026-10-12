@@ -29,6 +29,17 @@ In Alternate HUD, the author defines the technical direction and implementation 
 
 Alternate HUD uses a combination of human-authored configuration, handcrafted visual assets, author-implemented core logic, and AI-generated implementation code. This disclosure is intended to make those contributions clear to users and reviewers.
 
+## Author Involvement
+
+The author is actively involved in the design, implementation, testing, and maintenance of Alternate HUD.
+
+- **In-game testing and verification:** Tests the mod in-game, verifies theme reloading and configuration persistence, and measures performance to identify potential issues.
+- **Performance optimization and refactoring:** Reviews and refactors the code to improve performance, readability, maintainability, and overall code quality.
+- **UI and theme design:** Designs the user interface, writes the XML configuration, and creates and maintains the theme system and visual layouts.
+- **Code maintenance and Unity practices:** Reviews generated and existing code, maintains the codebase, and applies appropriate C#, Unity, and modding practices to improve reliability and consistency.
+
+AI-generated code is integrated into an author-directed development workflow. The author remains responsible for evaluating the implementation, testing its behavior, improving the code, and maintaining the project.
+
 ## Customize a theme
 
 Themes live in `BepInEx/plugins/AlternateHud/Themes/<ThemeName>/`. Copy the `Minimal` folder, edit its `theme.xml`, then select the folder name in the BepInEx configuration. `TextOnly` is included as a graphic-free alternative (icons and silhouette disabled); select it in the `Theme` setting. Press F9 in raid to reload the XML and PNG artwork without restarting. The build copies theme XML and image assets to the plugin folder.
