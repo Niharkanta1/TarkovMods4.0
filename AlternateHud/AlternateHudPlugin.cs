@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AlternateHud
 {
-    [BepInPlugin("com.deadly.hud", "AlternateHud", PluginInfo.Version)]
+    [BepInPlugin("com.alternate.hud", "AlternateHud", PluginInfo.Version)]
     public class AlternateHudPlugin : BaseUnityPlugin
     {
         internal static ManualLogSource Log;
@@ -38,7 +38,7 @@ namespace AlternateHud
             {
                 Config.SaveOnConfigSet = true;
                 Settings.Bind(Config, ThemesDir);
-                new Harmony("com.deadly.hud").PatchAll(typeof(AlternateHudPlugin).Assembly);
+                new Harmony("com.alternate.hud").PatchAll(typeof(AlternateHudPlugin).Assembly);
                 Log.LogInfo("Patched");
 
                 _root = new GameObject("AlternateHud") { hideFlags = HideFlags.HideAndDontSave };

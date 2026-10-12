@@ -86,7 +86,7 @@ Use the **Preview HUD Key** shortcut (F10 by default) to display sample values f
 
 ## Settings and placement
 
-The BepInEx configuration for this plugin is saved separately as `BepInEx/config/com.deadly.hud.cfg`. F12 changes save immediately and are restored on the next launch. Select the theme from the **Theme** dropdown; the list is populated from the theme folders at startup, so restart the game after adding a new folder.
+The BepInEx configuration for this plugin is saved separately as `BepInEx/config/com.alternate.hud.cfg`. F12 changes save immediately and are restored on the next launch. Select the theme from the **Theme** dropdown; the list is populated from the theme folders at startup, so restart the game after adding a new folder.
 
 ## Vitals labels, colors and position
 
