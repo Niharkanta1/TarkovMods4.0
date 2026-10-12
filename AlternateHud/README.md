@@ -1,6 +1,16 @@
 # AlternateHud
 
-AlternateHud is a lightweight, transparent HUD for SPT 4.1.5. The `Minimal` theme uses a seven-part health silhouette, compact vitals, active-effect indicators, weapon/ammunition/grenade information, stance/speed/stamina, a fine hit marker and an unboxed kill feed.
+AlternateHud is a lightweight, transparent HUD mod for SPT 4.1.5. Its Minimal theme features a seven-part health silhouette, compact vitals, active-effect indicators, weapon/ammunition/grenade information, stance, speed, stamina, a fine hit marker, and an unboxed kill feed.
+
+# Project Closure
+
+This mod has been abandoned. Since a significant portion of the codebase was developed with AI assistance, and I did not personally write much of the implementation, it does not meet the criteria for publication on SPT Forge.
+
+I plan to develop a better HUD in the future, applying the knowledge and experience gained from this project. AlternateHud serves as an example of how AI can be used to develop mods through proper planning, architecture, and Unity coding practices.
+
+For insights into the development process, see ARCHITECTURE.md and IMPLEMENTATION_PLAN.md.
+
+I believe AI is a tool that helps people work more efficiently and creatively. Using AI does not diminish the value of planning, learning, or engineering good software.
 
 # AI Disclosure — Alternate HUD
 
