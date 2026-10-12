@@ -2,6 +2,33 @@
 
 AlternateHud is a lightweight, transparent HUD for SPT 4.1.5. The `Minimal` theme uses a seven-part health silhouette, compact vitals, active-effect indicators, weapon/ammunition/grenade information, stance/speed/stamina, a fine hit marker and an unboxed kill feed.
 
+# AI Disclosure — Alternate HUD
+
+Alternate HUD is developed using a **Spec-Driven AI Development** workflow, where the author defines the technical specifications, architecture, implementation requirements, and expected behavior, while AI assists with generating portions of the source code.
+
+### What is created by the author?
+
+- **Configuration and XML themes:** Written and designed by the author, including HUD layouts, positioning, colors, and theme configuration.
+- **Visual assets and UI elements:** Handcrafted by the author using Adobe Photoshop.
+- **Core hooks and logic calculations:** The main hook system and logic calculations are implemented by the author.
+- **In-game UI generation boilerplate:** AI-assisted generation is used for boilerplate code that creates in-game icons and UI elements when a custom design or implementation is not provided.
+
+### How AI is used
+
+The project follows a specification-driven workflow. The author defines the technical requirements before implementation, including the intended behavior, methods to use, variables to reference, dependencies, and integration points. An AI coding orchestrator then generates code according to those specifications.
+
+AI is therefore used as an implementation assistant within an author-directed development process, rather than as an unrestricted, autonomous developer. The author determines the intended design and technical approach, while AI assists in translating those requirements into code.
+
+### What is Spec-Driven Development?
+
+**Spec-Driven Development (SDD)** is a software development approach in which implementation is guided by explicit specifications established before or during development. These specifications describe what the software must do, how components should interact, which constraints must be followed, and what behavior is expected.
+
+In Alternate HUD, the author defines the technical direction and implementation requirements, and AI generates portions of the code to meet those requirements. This approach aims to keep implementation aligned with the author's design decisions and project requirements.
+
+### Transparency
+
+Alternate HUD uses a combination of human-authored configuration, handcrafted visual assets, author-implemented core logic, and AI-generated implementation code. This disclosure is intended to make those contributions clear to users and reviewers.
+
 ## Customize a theme
 
 Themes live in `BepInEx/plugins/AlternateHud/Themes/<ThemeName>/`. Copy the `Minimal` folder, edit its `theme.xml`, then select the folder name in the BepInEx configuration. `TextOnly` is included as a graphic-free alternative (icons and silhouette disabled); select it in the `Theme` setting. Press F9 in raid to reload the XML and PNG artwork without restarting. The build copies theme XML and image assets to the plugin folder.
