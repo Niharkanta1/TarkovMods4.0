@@ -1,3 +1,4 @@
+
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
@@ -5,6 +6,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<!-- Mod Version -->
+		<ModVersion>1.0.2</ModVersion>
+
 		<OutputPath>$(SolutionDir)Build\$(Configuration)\SPT_Runtime\user\mods\$(MSBuildProjectName)\</OutputPath>
 		<IntermediateOutputPath>$(SolutionDir)\Build\Intermediate\$(MSBuildProjectName)\$(Configuration)\</IntermediateOutputPath>
 	</PropertyGroup>
@@ -24,16 +29,23 @@
 		</None>
 	</ItemGroup>
 
-	<Target Name="PackageModZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+	<Target Name="PackageModZip"
+			AfterTargets="Build"
+			Condition="'$(Configuration)' == 'Release'">
+
 		<PropertyGroup>
 			<ModReleaseDir>$(SolutionDir)Build\$(Configuration)\</ModReleaseDir>
-			<ModZipPath>$(SolutionDir)Build\$(MSBuildProjectName).zip</ModZipPath>
+			<ModZipName>$(MSBuildProjectName)-v$(ModVersion.Replace('.', '_')).zip</ModZipName>
+			<ModZipPath>$(SolutionDir)Build\$(ModZipName)</ModZipPath>
 		</PropertyGroup>
+
 		<ZipDirectory
 			SourceDirectory="$(ModReleaseDir)"
 			DestinationFile="$(ModZipPath)"
 			Overwrite="true" />
+
 		<Message Importance="high" Text="[Gunwright] Packaged release zip: $(ModZipPath)" />
+
 	</Target>
 
 </Project>

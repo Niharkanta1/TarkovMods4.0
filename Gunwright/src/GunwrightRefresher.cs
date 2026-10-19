@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Gunwright.Config;
 using Gunwright.Pricing;
 using SPTarkov.Common.Models.Logging;
@@ -34,8 +36,7 @@ public class GunwrightRefresher(
 
     private MongoId? _traderId;
     private long _lastPurchaseUnixMs;
-    private readonly Dictionary<MongoId, MongoId> _buildRootIds = new();
-    private readonly Dictionary<MongoId, string> _buildSignatures = new();
+    private PresetConfig? _config;
 
     public void SetTraderId(MongoId traderId)
     {
@@ -70,9 +71,25 @@ public class GunwrightRefresher(
         Interlocked.Exchange(ref _lastPurchaseUnixMs, CurrentUnixMs());
     }
 
-    private static long CurrentUnixMs()
+    public void InitialLoad()
     {
-        return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (_traderId is null)
+        {
+            return;
+        }
+
+        var traderId = _traderId.Value;
+
+        if (!tradersTable.TryGetValue(traderId, out _))
+        {
+            logger.Error($"[Gunwright]: Trader {traderId} not found, cannot load presets");
+            return;
+        }
+
+        lock (_assortGate)
+        {
+            RefreshCore(traderId);
+        }
     }
 
     public Task<bool> OnUpdateAsync(long secondsSinceLastRun, CancellationToken cancellationToken)
@@ -84,18 +101,38 @@ public class GunwrightRefresher(
 
         lock (_assortGate)
         {
-            var traderId = _traderId.Value;
-
             if (CurrentUnixMs() - Interlocked.Read(ref _lastPurchaseUnixMs) < PostPurchaseSuppressMs)
             {
                 return Task.FromResult(false);
             }
 
-            RefreshCore(traderId);
+            RefreshCore(_traderId.Value);
             return Task.FromResult(true);
         }
     }
 
+    private static long CurrentUnixMs()
+    {
+        return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+
+    // Must be called while holding _assortGate
+    private PresetConfig? GetConfig()
+    {
+        if (_config is not null)
+        {
+            return _config;
+        }
+
+        var pathToMod = modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
+        _config = modHelper.GetJsonDataFromFile<PresetConfig>(pathToMod, "db/config.json");
+        return _config;
+    }
+
+    /// <summary>
+    /// Builds a complete new assort off to the side, then swaps it in with a single
+    /// reference assignment so readers never see an empty or half-filled assort.
+    /// </summary>
     private int RefreshCore(MongoId traderId)
     {
         if (!tradersTable.TryGetValue(traderId, out var traderData))
@@ -104,30 +141,43 @@ public class GunwrightRefresher(
             return 0;
         }
 
-        traderData.Assort.Items.Clear();
-        traderData.Assort.BarterScheme.Clear();
-        traderData.Assort.LoyalLevelItems.Clear();
-        _buildRootIds.Clear();
-        _buildSignatures.Clear();
-
-        var pathToMod = modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
-        var config = modHelper.GetJsonDataFromFile<PresetConfig>(pathToMod, "db/config.json");
+        var config = GetConfig();
         var priceCalculator = new PresetPriceCalculator(itemHelper, config?.PriceConfig);
 
-        var buildCount = PopulateWeaponBuilds(traderData, priceCalculator);
+        var staging = new Trader
+        {
+            Assort = new TraderAssort
+            {
+                Items = [],
+                BarterScheme = new Dictionary<MongoId, List<List<BarterScheme>>>(),
+                LoyalLevelItems = new Dictionary<MongoId, int>()
+            },
+            Base = traderData.Base,
+            QuestAssort = traderData.QuestAssort,
+            Dialogue = traderData.Dialogue
+        };
 
-        var gearCount = PopulateStaticPresets(traderData, config?.GearPresets, priceCalculator, "gear presets");
-        var armorCount = PopulateStaticPresets(traderData, config?.ArmorPresets, priceCalculator, "armor presets");
+        var total = PopulateWeaponBuilds(staging, priceCalculator)
+                    + PopulateStaticPresets(staging, config?.GearPresets, priceCalculator, "gear presets")
+                    + PopulateStaticPresets(staging, config?.ArmorPresets, priceCalculator, "armor presets")
+                    + PopulateGunsmithPresets(staging, config?.WeaponPresets, priceCalculator);
 
-        var gunsmithCount = PopulateGunsmithPresets(traderData, config?.WeaponPresets, priceCalculator);
+        // Only swap if we actually built something, so a config error never leaves the trader empty
+        if (total > 0)
+        {
+            traderData.Assort = staging.Assort;
+        }
+        else
+        {
+            logger.Warning("[Gunwright]: Refresh produced no offers, keeping the previous assort");
+        }
 
-        return buildCount + gearCount + armorCount + gunsmithCount;
+        return total;
     }
 
-    private int PopulateWeaponBuilds(Trader traderData, PresetPriceCalculator priceCalculator)
+    private int PopulateWeaponBuilds(Trader staging, PresetPriceCalculator priceCalculator)
     {
-        var syncedCount = 0;
-        var currentBuildIds = new HashSet<MongoId>();
+        var count = 0;
 
         foreach (var (_, profile) in profileHelper.GetProfiles())
         {
@@ -145,29 +195,10 @@ public class GunwrightRefresher(
                     continue;
                 }
 
-                currentBuildIds.Add(build.Id);
-
-                var signature = ComputeBuildSignature(build.Items);
-
-                if (_buildRootIds.TryGetValue(build.Id, out var existingRootId)
-                    && _buildSignatures.TryGetValue(build.Id, out var existingSignature)
-                    && existingSignature == signature)
-                {
-                    continue;
-                }
-
-                if (_buildRootIds.TryGetValue(build.Id, out var staleRootId))
-                {
-                    RemoveAssortHierarchy(traderData, staleRootId);
-                    _buildRootIds.Remove(build.Id);
-                    _buildSignatures.Remove(build.Id);
-                    logger.Debug($"[Gunwright]: Replacing modified build '{build.Name}' ({build.Id})");
-                }
-
                 var buildName = build.Name ?? build.Id.ToString();
                 var items = cloner.Clone(build.Items);
 
-                if (!TryPreparePreset(items, build.Root, buildName, out var rootId))
+                if (!TryPreparePreset(items, build.Root, $"build|{build.Id}", buildName, out var rootId))
                 {
                     logger.Warning($"[Gunwright]: Failed to add build '{buildName}' ({build.Id}) to assort");
                     continue;
@@ -180,46 +211,23 @@ public class GunwrightRefresher(
                     continue;
                 }
 
-                AddToAssort(traderData, items!, rootId, price.Amount);
-                _buildRootIds[build.Id] = rootId;
-                _buildSignatures[build.Id] = signature;
-
-                logger.Debug(
-                    $"[Gunwright]: Added build '{buildName}' ({build.Id}) (price: {price.Amount}₽ [{price.RarityName}])");
-
-                foreach (var item in price.Breakdown)
+                if (AddToAssort(staging, items!, rootId, price.Amount))
                 {
                     logger.Debug(
-                        $"[Gunwright]:   {item.Template}: " +
-                        $"Raw = {item.RawValue:N0}₽ → " +
-                        $"Modified = {item.ModifiedValue:N0}₽");
+                        $"[Gunwright]: Added build '{buildName}' ({build.Id}) (price: {price.Amount}₽ [{price.RarityName}])");
+                    count++;
                 }
-
-                logger.Debug(
-                    $"[Gunwright]:   TOTAL: " +
-                    $"Raw = {price.RawTotal:N0}₽ → " +
-                    $"Modified = {price.Amount:N0}₽ " +
-                    $"[{price.RarityName}]");
-
-                syncedCount++;
             }
         }
 
-        foreach (var kvp in _buildRootIds.ToList())
-        {
-            if (!currentBuildIds.Contains(kvp.Key))
-            {
-                RemoveAssortHierarchy(traderData, kvp.Value);
-                _buildRootIds.Remove(kvp.Key);
-                _buildSignatures.Remove(kvp.Key);
-                logger.Debug($"[Gunwright]: Removed deleted build ({kvp.Key}) from trader");
-            }
-        }
-
-        return syncedCount;
+        return count;
     }
 
-    private int PopulateStaticPresets(Trader traderData, List<MatchedSet>? sets, PresetPriceCalculator priceCalculator, string label)
+    private int PopulateStaticPresets(
+        Trader staging,
+        List<MatchedSet>? sets,
+        PresetPriceCalculator priceCalculator,
+        string label)
     {
         if (sets is null or { Count: 0 })
         {
@@ -227,7 +235,7 @@ public class GunwrightRefresher(
             return 0;
         }
 
-        var soldRootTpls = GetSoldRootTemplates(traderData);
+        var soldRootTpls = GetSoldRootTemplates(staging);
         var added = 0;
 
         foreach (var set in sets)
@@ -256,7 +264,7 @@ public class GunwrightRefresher(
                 continue;
             }
 
-            var rootId = new MongoId();
+            var rootId = StableId($"{label}|{set.RootTpl}|root");
             var items = new List<Item>
             {
                 new()
@@ -274,13 +282,14 @@ public class GunwrightRefresher(
                 }
             };
 
+            var attIndex = 0;
             foreach (var att in set.Attachments ?? [])
             {
                 if (att is { Tpl: not null, Slot: not null })
                 {
                     items.Add(new Item
                     {
-                        Id = new MongoId(),
+                        Id = StableId($"{label}|{set.RootTpl}|{attIndex++}"),
                         Template = att.Tpl,
                         ParentId = rootId,
                         SlotId = att.Slot,
@@ -296,19 +305,25 @@ public class GunwrightRefresher(
                 continue;
             }
 
-            AddToAssort(traderData, items, rootId, price.Amount);
-            logger.Debug($"[Gunwright]: Added {label} '{set.RootTpl}' (price: {price.Amount}₽ [{price.RarityName}], {items.Count} items)");
-            added++;
+            if (AddToAssort(staging, items, rootId, price.Amount))
+            {
+                logger.Debug(
+                    $"[Gunwright]: Added {label} '{set.RootTpl}' (price: {price.Amount}₽ [{price.RarityName}], {items.Count} items)");
+                added++;
+            }
         }
 
         return added;
     }
 
-    private int PopulateGunsmithPresets(Trader traderData, Dictionary<string, List<Item>>? presets, PresetPriceCalculator priceCalculator)
+    private int PopulateGunsmithPresets(
+        Trader staging,
+        Dictionary<string, List<Item>>? presets,
+        PresetPriceCalculator priceCalculator)
     {
         if (presets is null or { Count: 0 })
         {
-            logger.Warning($"[Gunwright]: gunsmith weapon presets not found or empty");
+            logger.Warning("[Gunwright]: gunsmith weapon presets not found or empty");
             return 0;
         }
 
@@ -322,88 +337,107 @@ public class GunwrightRefresher(
                 continue;
             }
 
-            if (!TryPreparePreset(presetItems, knownRootId: null, name, out var rootId))
+            // Clone: TryPreparePreset mutates ids/parents/upd, and the config is cached
+            var items = cloner.Clone(presetItems);
+
+            if (!TryPreparePreset(items, null, $"gunsmith|{name}", name, out var rootId))
             {
                 logger.Warning($"[Gunwright]: Skipping weapon preset '{name}' - invalid item hierarchy");
                 continue;
             }
 
-            var price = priceCalculator.Compute(presetItems.Select(i => i.Template));
+            var price = priceCalculator.Compute(items!.Select(i => i.Template));
             if (price.Amount <= 0)
             {
                 logger.Warning($"[Gunwright]: Skipping weapon preset '{name}' - price is 0");
                 continue;
             }
 
-            AddToAssort(traderData, presetItems, rootId, price.Amount);
-            logger.Debug($"[Gunwright]: Added weapon preset '{name}' (price: {price.Amount}₽ [{price.RarityName}], {presetItems.Count} items)");
-            added++;
+            if (AddToAssort(staging, items!, rootId, price.Amount))
+            {
+                logger.Debug(
+                    $"[Gunwright]: Added weapon preset '{name}' (price: {price.Amount}₽ [{price.RarityName}], {items!.Count} items)");
+                added++;
+            }
         }
 
         return added;
     }
 
-    public void InitialLoad()
-    {
-        if (_traderId is null)
-        {
-            return;
-        }
-
-        var traderId = _traderId.Value;
-
-        if (!tradersTable.TryGetValue(traderId, out _))
-        {
-            logger.Error($"[Gunwright]: Trader {traderId} not found, cannot load presets");
-            return;
-        }
-
-        lock (_assortGate)
-        {
-            RefreshCore(traderId);
-        }
-    }
-
-    private void RemoveAssortHierarchy(Trader traderData, MongoId rootId)
-    {
-        var toRemove = new HashSet<MongoId> { rootId };
-        var queue = new Queue<MongoId>([rootId]);
-
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
-            foreach (var item in traderData.Assort.Items)
-            {
-                if (item.ParentId is not null && item.ParentId.Equals(current) && toRemove.Add(item.Id))
-                {
-                    queue.Enqueue(item.Id);
-                }
-            }
-        }
-
-        traderData.Assort.Items.RemoveAll(i => toRemove.Contains(i.Id));
-        traderData.Assort.BarterScheme.Remove(rootId);
-        traderData.Assort.LoyalLevelItems.Remove(rootId);
-    }
-
     #region Helpers
 
-    private static HashSet<MongoId> GetSoldRootTemplates(Trader traderData)
+    /// <summary>Same key always produces the same 24-char hex id.</summary>
+    private static MongoId StableId(string key)
     {
-        return traderData.Assort.Items
+        var hash = SHA1.HashData(Encoding.UTF8.GetBytes(key));
+        return new MongoId(Convert.ToHexString(hash, 0, 12).ToLowerInvariant());
+    }
+
+    private static HashSet<MongoId> GetSoldRootTemplates(Trader staging)
+    {
+        return staging.Assort.Items
             .Where(i => i.SlotId == TraderRootParentId)
             .Select(i => i.Template)
             .ToHashSet();
     }
 
-    private void AddToAssort(Trader traderData, List<Item> items, MongoId rootId, int price)
+    private bool AddToAssort(Trader staging, List<Item> items, MongoId rootId, int price)
     {
-        traderData.Assort.Items.AddRange(items);
-        traderData.Assort.BarterScheme[rootId] = [[new() { Count = price, Template = Money.ROUBLES }]];
-        traderData.Assort.LoyalLevelItems[rootId] = 1;
+        if (staging.Assort.BarterScheme.ContainsKey(rootId))
+        {
+            logger.Warning($"[Gunwright]: Duplicate offer id {rootId}, skipping");
+            return false;
+        }
+
+        staging.Assort.Items.AddRange(items);
+        staging.Assort.BarterScheme[rootId] = [[new() { Count = price, Template = Money.ROUBLES }]];
+        staging.Assort.LoyalLevelItems[rootId] = 1;
+        return true;
     }
 
-    private bool TryPreparePreset(List<Item>? items, MongoId? knownRootId, string presetName, out MongoId rootId)
+    /// <summary>
+    /// Gives every item in the preset a deterministic id derived from <paramref name="key"/>
+    /// and its position, and rewires ParentId references. Returns the new root (offer) id.
+    /// </summary>
+    private static MongoId RemapIds(List<Item> items, Item rootItem, string key)
+    {
+        var map = new Dictionary<string, MongoId>();
+        var rootId = StableId($"{key}|root");
+        map[rootItem.Id.ToString()] = rootId;
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            var old = items[i].Id.ToString();
+            if (!map.ContainsKey(old))
+            {
+                map[old] = StableId($"{key}|{i}");
+            }
+        }
+
+        foreach (var item in items)
+        {
+            if (!ReferenceEquals(item, rootItem)
+                && item.ParentId is not null
+                && map.TryGetValue(item.ParentId.ToString(), out var newParent))
+            {
+                item.ParentId = newParent;
+            }
+        }
+
+        foreach (var item in items)
+        {
+            item.Id = map[item.Id.ToString()];
+        }
+
+        return rootId;
+    }
+
+    private bool TryPreparePreset(
+        List<Item>? items,
+        MongoId? knownRootId,
+        string key,
+        string presetName,
+        out MongoId rootId)
     {
         rootId = default;
 
@@ -419,7 +453,7 @@ public class GunwrightRefresher(
             return false;
         }
 
-        rootId = RemapRootId(items, rootItem);
+        rootId = RemapIds(items, rootItem, key);
 
         if (!ValidatePresetHierarchy(items, rootId, presetName))
         {
@@ -452,28 +486,6 @@ public class GunwrightRefresher(
         }
 
         return items.FirstOrDefault();
-    }
-
-    private static MongoId RemapRootId(List<Item> items, Item rootItem)
-    {
-        var oldRootId = rootItem.Id;
-        var newRootId = new MongoId();
-        rootItem.Id = newRootId;
-
-        foreach (var item in items)
-        {
-            if (item.Id.Equals(newRootId))
-            {
-                continue;
-            }
-
-            if (item.ParentId is not null && item.ParentId == oldRootId)
-            {
-                item.ParentId = newRootId;
-            }
-        }
-
-        return newRootId;
     }
 
     private void PrepareItemForAssort(Item item, string parentId)
@@ -548,8 +560,8 @@ public class GunwrightRefresher(
 
             var parentProps = itemHelper.GetItem(parent.Template).Value?.Properties;
             var slotDeclared = parentProps?.Slots?.Any(s => s.Name == child.SlotId) == true
-                || parentProps?.Cartridges?.Any(s => s.Name == child.SlotId) == true
-                || parentProps?.Chambers?.Any(s => s.Name == child.SlotId) == true;
+                               || parentProps?.Cartridges?.Any(s => s.Name == child.SlotId) == true
+                               || parentProps?.Chambers?.Any(s => s.Name == child.SlotId) == true;
 
             if (!slotDeclared)
             {
@@ -559,18 +571,6 @@ public class GunwrightRefresher(
         }
 
         return true;
-    }
-
-    #endregion
-
-    private static string ComputeBuildSignature(List<Item> items)
-    {
-        var parts = items
-            .Select(item => $"{item.Template}|{item.SlotId ?? string.Empty}")
-            .OrderBy(x => x, StringComparer.Ordinal)
-            .ToArray();
-
-        return string.Join(";", parts);
     }
 
     private void NormalizeDurability(Item item)
@@ -589,4 +589,6 @@ public class GunwrightRefresher(
         item.Upd.Repairable.MaxDurability = maxDurability;
         item.Upd.Repairable.Durability = maxDurability;
     }
+
+    #endregion
 }

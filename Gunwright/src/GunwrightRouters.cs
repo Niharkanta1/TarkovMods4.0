@@ -22,20 +22,15 @@ public class GunwrightAssortRouter(
             async (url, info, sessionID, output, cancellationToken) =>
             {
                 var path = url.Split('?')[0];
-                var traderId = path.Substring(path.LastIndexOf('/') + 1);
+                var traderId = path[(path.LastIndexOf('/') + 1)..];
 
-                if (traderId == refresher.GetTraderIdString())
+                // Refresh() takes its own lock, so no external lock is needed here
+                if (traderId == refresher.GetTraderIdString() && refresher.CanRefresh())
                 {
-                    lock (refresher)
-                    {
-                        if (refresher.CanRefresh())
-                        {
-                            refresher.Refresh(traderId);
-                        }
-                    }
+                    refresher.Refresh(traderId);
                 }
 
-                return string.Empty;
+                return output;
             }
         ),
     ]
@@ -55,7 +50,7 @@ public class GunwrightItemMovingRouter(
             (url, info, sessionID, output, cancellationToken) =>
             {
                 NotifyIfPurchaseFromTrader(info, refresher, logger);
-                return ValueTask.FromResult(string.Empty);
+                return ValueTask.FromResult(output);
             }
         ),
     ]

@@ -24,7 +24,8 @@ public class GunwrightRegistration(
     TimeUtil timeUtil,
     ICloner cloner,
     TradersTable tradersTable,
-    LocaleTable localeTable
+    LocaleTable localeTable,
+    GunwrightRefresher refresher
 )
     : IOnLoad
 {
@@ -76,6 +77,10 @@ public class GunwrightRegistration(
             traderBase,
             "Gunwright",
             "Sells weapon presets built and saved in your stash.");
+
+        // Activate the refresher: the router and the 30s timer do nothing until this is set
+        refresher.SetTraderId(traderBase.Id);
+        refresher.InitialLoad();
 
         logger.Success(
             $"[Gunwright]: Registered trader {traderBase.Id} ahead of profile validation");
