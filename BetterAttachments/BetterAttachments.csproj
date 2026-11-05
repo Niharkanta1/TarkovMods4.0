@@ -6,14 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
     <!-- The two lines below will set the output path for the binaries -->
     <OutputPath>bin\$(Configuration)\SPT_Runtime\user\mods\$(ProjectName)\$(AssemblyName)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <!-- ZIP -->
-    <ZipFileName>BetterAttachments_v4_1_5.zip</ZipFileName>
-    <ZipOutputPath>bin\$(Configuration)\$(ZipFileName)</ZipOutputPath>
+    <ZipFileName>BetterAttachments_v$([System.String]::Copy('$(Version)').Replace('.', '-')).zip</ZipFileName>
+    <ZipOutputPath>$(MSBuildProjectDirectory)\dist\$(ZipFileName)</ZipOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,8 +29,9 @@
         Condition="'$(Configuration)' == 'Release'">
     <PropertyGroup>
       <ZipSourcePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\SPT_Runtime</ZipSourcePath>
-      <ZipOutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(ZipFileName)</ZipOutputPath>
+      <ZipOutputPath>$(MSBuildProjectDirectory)\dist\$(ZipFileName)</ZipOutputPath>
     </PropertyGroup>
+    <MakeDir Directories="$(MSBuildProjectDirectory)\dist" />
     <Message Text="Creating release ZIP: $(ZipOutputPath)" Importance="high" />
     <Delete Files="$(ZipOutputPath)" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Compress-Archive -Path '$(ZipSourcePath)' -DestinationPath '$(ZipOutputPath)' -Force&quot;" />

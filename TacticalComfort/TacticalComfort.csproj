@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>TacticalComfort</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <OutputType>Library</OutputType>
+    <Version>1.0.4</Version>
+    <!-- The two lines below will set the output path for the binaries -->
+    <OutputPath>bin\$(Configuration)\SPT_Runtime\user\mods\$(ProjectName)\$(AssemblyName)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- ZIP -->
+    <ZipVersion>$([System.String]::Copy('$(Version)').Replace('.', '-'))</ZipVersion>
+    <ZipFileName>TacticalComfort_v$(ZipVersion).zip</ZipFileName>
+    <ZipOutputPath>$(MSBuildProjectDirectory)\dist\$(ZipFileName)</ZipOutputPath>
+    <ZipStagingPath>$(MSBuildProjectDirectory)\obj\$(Configuration)\TacticalComfortReleasePackage</ZipStagingPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="config\**\*" CopyToOutputDirectory="Always"/>
+    <PackageReference Include="SPTushonka.Common" Version="4.1.5" />
+    <PackageReference Include="SPTushonka.DI" Version="4.1.5" />
+    <PackageReference Include="SPTushonka.Server.Core" Version="4.1.5" />
+  </ItemGroup>
+
+  <Target Name="CreateReleaseZip"
+        AfterTargets="Build"
+        Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <TacticalComfortReleaseFiles Include="$(TargetDir)**\*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(ZipStagingPath)" />
+    <MakeDir Directories="$(ZipStagingPath)\SPT_Runtime\user\mods\$(ProjectName)" />
+    <Copy SourceFiles="@(TacticalComfortReleaseFiles)"
+          DestinationFiles="@(TacticalComfortReleaseFiles->'$(ZipStagingPath)\SPT_Runtime\user\mods\$(ProjectName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <MakeDir Directories="$(MSBuildProjectDirectory)\dist" />
+    <Message Text="Creating release ZIP: $(ZipOutputPath)" Importance="high" />
+    <Delete Files="$(ZipOutputPath)" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Compress-Archive -Path '$(ZipStagingPath)\SPT_Runtime' -DestinationPath '$(ZipOutputPath)' -Force&quot;" />
+  </Target>
+
+</Project>

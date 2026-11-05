@@ -10,6 +10,7 @@
 	"betterStocks": true,
 	"betterPistolGrips": true,
 	"betterHandGuards": true,
+	"missingAttachmentImprovementPercent": 10,
 	"value": {
 		"558032614bdc2de7118b4585": {
 			"category": "FOREGRIP",

@@ -1,0 +1,50 @@
+{
+  "armor": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "armoredEquipment": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "armorRig": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "tacticalRig": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "backpack": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "helmet": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "armorPlate": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  },
+  "builtInInserts": {
+    "ergonomics": 50,
+    "movementSpeedPenalty": 50,
+    "turnSpeedPenalty": 50,
+    "weaponErgonomicPenalty": 50
+  }
+}

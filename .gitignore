@@ -93,3 +93,5 @@ _ReSharper*/
 ## Ignore dotCover files
 *.dotCover
 *-workspace
+**/dist/**
+**/Requirement.md

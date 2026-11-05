@@ -16,7 +16,8 @@ public record ModMetadata : IModMetadata
     public string Name { get; init; } = "BetterAttachments";
     public string Author { get; init; } = "DeadW0Lf";
     public List<string>? Contributors { get; init; }
-    public SemanticVersioning.Version Version { get; init; } = new("2.0.0");
+    public SemanticVersioning.Version Version { get; init; } =
+        new(typeof(BetterAttachments).Assembly.GetName().Version!.ToString(3));
     public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
     public List<string>? Incompatibilities { get; init; }
     public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
@@ -80,6 +81,13 @@ public class BetterAttachments(ISptLogger<BetterAttachments> logger, TemplateTab
         betterStocks = config["betterStocks"]!.GetValue<bool>();
         betterPistolGrips = config["betterPistolGrips"]!.GetValue<bool>();
         betterHandGuards = config["betterHandGuards"]!.GetValue<bool>();
+        double missingAttachmentImprovementPercent =
+            config["missingAttachmentImprovementPercent"]!.GetValue<double>();
+        if (missingAttachmentImprovementPercent is < 0 or > 100)
+        {
+            throw new InvalidDataException(
+                "[BetterAttachments] missingAttachmentImprovementPercent must be between 0 and 100.");
+        }
 
         var attachmentConfig = config["value"]!.AsObject();
         var count = 0;
@@ -100,6 +108,7 @@ public class BetterAttachments(ISptLogger<BetterAttachments> logger, TemplateTab
                 if (betterForegrips && parentId.Equals(BaseClasses.FOREGRIP))
                 {
                     UpdateErgonomics(attachmentData, itemProps);
+                    UpdateRecoil(attachmentData, itemProps, betterForegrips);
                 }
 
                 // Sights
@@ -177,14 +186,91 @@ public class BetterAttachments(ISptLogger<BetterAttachments> logger, TemplateTab
                 }
             }
         }
+
+        var fallbackCount = 0;
+        if (missingAttachmentImprovementPercent > 0)
+        {
+            foreach (var (itemId, item) in itemsDb)
+            {
+                if (attachmentConfig.ContainsKey(itemId.ToString()) ||
+                    !TryGetMissingAttachmentAdjustments(item.Parent, out bool improveErgonomics, out bool improveRecoil))
+                {
+                    continue;
+                }
+
+                if (improveErgonomics)
+                {
+                    item.Properties.Ergonomics = ApplyPercentageImprovement(
+                        item.Properties.Ergonomics,
+                        missingAttachmentImprovementPercent,
+                        isRecoil: false);
+                }
+
+                if (improveRecoil)
+                {
+                    item.Properties.Recoil = ApplyPercentageImprovement(
+                        item.Properties.Recoil,
+                        missingAttachmentImprovementPercent,
+                        isRecoil: true);
+                }
+
+                fallbackCount++;
+            }
+        }
+
         logger.Info($"[BetterAttachments] Updated {count} attachments...");
+        logger.Info($"[BetterAttachments] Processed {fallbackCount} eligible unlisted attachments.");
         logger.LogWithColor("[BetterAttachments] Loading BalancedMeds Mod Completed.", Spectre.Console.Color.Green);
         return Task.CompletedTask;
     }
 
-    private void UpdateRecoil(JsonObject attachmentData, TemplateItemProperties itemProps, bool betterMuzzleRecoil)
+    private bool TryGetMissingAttachmentAdjustments(
+        MongoId parentId,
+        out bool improveErgonomics,
+        out bool improveRecoil)
     {
-        if (betterMuzzleRecoil && attachmentData.ContainsKey("recoil_updated"))
+        bool isMuzzle = muzzleTypes.Contains(parentId) || parentId.Equals(BaseClasses.FLASH_HIDER);
+        bool isStock = parentId.Equals(BaseClasses.STOCK);
+        bool isHandGuard = parentId.Equals(BaseClasses.HANDGUARD);
+        bool isPistolGrip = parentId.Equals(BaseClasses.PISTOL_GRIP);
+        bool isSilencer = parentId.Equals(BaseClasses.SILENCER);
+        bool isForegrip = parentId.Equals(BaseClasses.FOREGRIP);
+
+        improveErgonomics =
+            (isForegrip && betterForegrips) ||
+            (sightTypes.Contains(parentId) && betterSights) ||
+            (isMuzzle && betterMuzzles) ||
+            (isSilencer && betterSuppressors) ||
+            (tacticalTypes.Contains(parentId) && betterTacticals) ||
+            (isStock && betterStocks) ||
+            (isHandGuard && betterHandGuards) ||
+            (isPistolGrip && betterPistolGrips);
+
+        improveRecoil =
+            (isForegrip && betterForegrips) ||
+            (isMuzzle && betterMuzzles && betterMuzzleRecoil) ||
+            (isSilencer && betterSuppressorRecoil) ||
+            ((isStock && betterStocks) ||
+             (isHandGuard && betterHandGuards) ||
+             (isPistolGrip && betterPistolGrips)) && betterMuzzleRecoil;
+
+        return improveErgonomics || improveRecoil;
+    }
+
+    private static double? ApplyPercentageImprovement(double? value, double percentage, bool isRecoil)
+    {
+        if (!value.HasValue)
+        {
+            return null;
+        }
+
+        double adjustment = Math.Abs(value.Value) * percentage / 100;
+        return isRecoil ? value.Value - adjustment : value.Value + adjustment;
+    }
+
+    private void UpdateRecoil(JsonObject attachmentData, TemplateItemProperties itemProps, bool recoilEnabled)
+    {
+        if (recoilEnabled && attachmentData.ContainsKey("recoil_updated"))
         {
             itemProps.Recoil = attachmentData["recoil_updated"]!.GetValue<double>();
         }
